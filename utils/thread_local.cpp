@@ -38,7 +38,7 @@
 #endif
 
 #include "core/os/memory.h"
-#include "core/print_string.h"
+#include "core/string/print_string.h"
 
 struct ThreadLocalStorage::Impl {
 #ifdef WINDOWS_ENABLED

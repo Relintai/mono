@@ -34,7 +34,7 @@
 #ifdef JAVASCRIPT_ENABLED
 
 #include "core/typedefs.h"
-#include "core/ustring.h"
+#include "core/string/ustring.h"
 
 #include <mono/metadata/loader.h>
 #include <mono/utils/mono-publib.h>

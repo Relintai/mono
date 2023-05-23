@@ -34,10 +34,10 @@
 #include <mono/metadata/tokentype.h>
 
 #include "core/io/file_access_pack.h"
-#include "core/list.h"
+#include "core/containers/list.h"
 #include "core/os/file_access.h"
 #include "core/os/os.h"
-#include "core/project_settings.h"
+#include "core/config/project_settings.h"
 
 #include "../godotsharp_dirs.h"
 #include "gd_mono_cache.h"
@@ -320,7 +320,7 @@ no_pdb:
 void GDMonoAssembly::unload() {
 	ERR_FAIL_NULL(image); // Should not be called if already unloaded
 
-	for (Map<MonoClass *, GDMonoClass *>::Element *E = cached_raw.front(); E; E = E->next()) {
+	for (RBMap<MonoClass *, GDMonoClass *>::Element *E = cached_raw.front(); E; E = E->next()) {
 		memdelete(E->value());
 	}
 
@@ -361,7 +361,7 @@ GDMonoClass *GDMonoAssembly::get_class(const StringName &p_namespace, const Stri
 GDMonoClass *GDMonoAssembly::get_class(MonoClass *p_mono_class) {
 	ERR_FAIL_NULL_V(image, NULL);
 
-	Map<MonoClass *, GDMonoClass *>::Element *match = cached_raw.find(p_mono_class);
+	RBMap<MonoClass *, GDMonoClass *>::Element *match = cached_raw.find(p_mono_class);
 
 	if (match)
 		return match->value();
@@ -381,7 +381,7 @@ GDMonoClass *GDMonoAssembly::get_object_derived_class(const StringName &p_class)
 	GDMonoClass *match = NULL;
 
 	if (gdobject_class_cache_updated) {
-		Map<StringName, GDMonoClass *>::Element *result = gdobject_class_cache.find(p_class);
+		RBMap<StringName, GDMonoClass *>::Element *result = gdobject_class_cache.find(p_class);
 
 		if (result)
 			match = result->get();

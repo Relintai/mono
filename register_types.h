@@ -1,3 +1,6 @@
+#ifndef MONO_REGISTER_TYPES_H
+#define MONO_REGISTER_TYPES_H
+
 /**************************************************************************/
 /*  register_types.h                                                      */
 /**************************************************************************/
@@ -28,5 +31,9 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-void register_mono_types();
-void unregister_mono_types();
+#include "modules/register_module_types.h"
+
+void register_mono_types(ModuleRegistrationLevel p_level);
+void unregister_mono_types(ModuleRegistrationLevel p_level);
+
+#endif

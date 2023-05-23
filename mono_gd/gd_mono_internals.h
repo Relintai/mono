@@ -35,7 +35,7 @@
 
 #include "../utils/macros.h"
 
-#include "core/object.h"
+#include "core/object/object.h"
 
 namespace GDMonoInternals {
 void tie_managed_to_unmanaged(MonoObject *managed, Object *unmanaged);

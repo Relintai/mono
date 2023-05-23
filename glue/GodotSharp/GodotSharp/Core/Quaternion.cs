@@ -10,12 +10,12 @@ namespace Godot
 {
     /// <summary>
     /// A unit quaternion used for representing 3D rotations.
-    /// Quaternions need to be normalized to be used for rotation.
+    /// Quaternionernions need to be normalized to be used for rotation.
     ///
     /// It is similar to <see cref="Basis"/>, which implements matrix
     /// representation of rotations, and can be parametrized using both
     /// an axis-angle pair or Euler angles. Basis stores rotation, scale,
-    /// and shearing, while Quat only stores rotation.
+    /// and shearing, while Quaternion only stores rotation.
     ///
     /// Due to its compactness and the way it is stored in memory, certain
     /// operations (obtaining axis-angle and performing SLERP, in particular)
@@ -23,29 +23,29 @@ namespace Godot
     /// </summary>
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Quat : IEquatable<Quat>
+    public struct Quaternion : IEquatable<Quaternion>
     {
         /// <summary>
         /// X component of the quaternion (imaginary <c>i</c> axis part).
-        /// Quaternion components should usually not be manipulated directly.
+        /// Quaternionernion components should usually not be manipulated directly.
         /// </summary>
         public real_t x;
 
         /// <summary>
         /// Y component of the quaternion (imaginary <c>j</c> axis part).
-        /// Quaternion components should usually not be manipulated directly.
+        /// Quaternionernion components should usually not be manipulated directly.
         /// </summary>
         public real_t y;
 
         /// <summary>
         /// Z component of the quaternion (imaginary <c>k</c> axis part).
-        /// Quaternion components should usually not be manipulated directly.
+        /// Quaternionernion components should usually not be manipulated directly.
         /// </summary>
         public real_t z;
 
         /// <summary>
         /// W component of the quaternion (real part).
-        /// Quaternion components should usually not be manipulated directly.
+        /// Quaternionernion components should usually not be manipulated directly.
         /// </summary>
         public real_t w;
 
@@ -130,7 +130,7 @@ namespace Godot
         /// </summary>
         /// <param name="to">The other quaternion.</param>
         /// <returns>The angle between the quaternions.</returns>
-        public real_t AngleTo(Quat to)
+        public real_t AngleTo(Quaternion to)
         {
             real_t dot = Dot(to);
             return Mathf.Acos(Mathf.Clamp(dot * dot * 2 - 1, -1, 1));
@@ -145,11 +145,11 @@ namespace Godot
         /// <param name="postB">A quaternion after <paramref name="b"/>.</param>
         /// <param name="weight">A value on the range of 0.0 to 1.0, representing the amount of interpolation.</param>
         /// <returns>The interpolated quaternion.</returns>
-        public Quat CubicSlerp(Quat b, Quat preA, Quat postB, real_t weight)
+        public Quaternion CubicSlerp(Quaternion b, Quaternion preA, Quaternion postB, real_t weight)
         {
             real_t t2 = (1.0f - weight) * weight * 2f;
-            Quat sp = Slerp(b, weight);
-            Quat sq = preA.Slerpni(postB, weight);
+            Quaternion sp = Slerp(b, weight);
+            Quaternion sq = preA.Slerpni(postB, weight);
             return sp.Slerpni(sq, t2);
         }
 
@@ -158,7 +158,7 @@ namespace Godot
         /// </summary>
         /// <param name="b">The other quaternion.</param>
         /// <returns>The dot product.</returns>
-        public real_t Dot(Quat b)
+        public real_t Dot(Quaternion b)
         {
             return (x * b.x) + (y * b.y) + (z * b.z) + (w * b.w);
         }
@@ -175,7 +175,7 @@ namespace Godot
 #if DEBUG
             if (!IsNormalized())
             {
-                throw new InvalidOperationException("Quat is not normalized");
+                throw new InvalidOperationException("Quaternion is not normalized");
             }
 #endif
             var basis = new Basis(this);
@@ -186,15 +186,15 @@ namespace Godot
         /// Returns the inverse of the quaternion.
         /// </summary>
         /// <returns>The inverse quaternion.</returns>
-        public Quat Inverse()
+        public Quaternion Inverse()
         {
 #if DEBUG
             if (!IsNormalized())
             {
-                throw new InvalidOperationException("Quat is not normalized");
+                throw new InvalidOperationException("Quaternion is not normalized");
             }
 #endif
-            return new Quat(-x, -y, -z, w);
+            return new Quaternion(-x, -y, -z, w);
         }
 
         /// <summary>
@@ -210,12 +210,12 @@ namespace Godot
         /// Returns a copy of the quaternion, normalized to unit length.
         /// </summary>
         /// <returns>The normalized quaternion.</returns>
-        public Quat Normalized()
+        public Quaternion Normalized()
         {
             return this / Length;
         }
 
-        [Obsolete("Set is deprecated. Use the Quat(" + nameof(real_t) + ", " + nameof(real_t) + ", " + nameof(real_t) + ", " + nameof(real_t) + ") constructor instead.", error: true)]
+        [Obsolete("Set is deprecated. Use the Quaternion(" + nameof(real_t) + ", " + nameof(real_t) + ", " + nameof(real_t) + ", " + nameof(real_t) + ") constructor instead.", error: true)]
         public void Set(real_t x, real_t y, real_t z, real_t w)
         {
             this.x = x;
@@ -224,22 +224,22 @@ namespace Godot
             this.w = w;
         }
 
-        [Obsolete("Set is deprecated. Use the Quat(" + nameof(Quat) + ") constructor instead.", error: true)]
-        public void Set(Quat q)
+        [Obsolete("Set is deprecated. Use the Quaternion(" + nameof(Quaternion) + ") constructor instead.", error: true)]
+        public void Set(Quaternion q)
         {
             this = q;
         }
 
-        [Obsolete("SetAxisAngle is deprecated. Use the Quat(" + nameof(Vector3) + ", " + nameof(real_t) + ") constructor instead.", error: true)]
+        [Obsolete("SetAxisAngle is deprecated. Use the Quaternion(" + nameof(Vector3) + ", " + nameof(real_t) + ") constructor instead.", error: true)]
         public void SetAxisAngle(Vector3 axis, real_t angle)
         {
-            this = new Quat(axis, angle);
+            this = new Quaternion(axis, angle);
         }
 
-        [Obsolete("SetEuler is deprecated. Use the Quat(" + nameof(Vector3) + ") constructor instead.", error: true)]
+        [Obsolete("SetEuler is deprecated. Use the Quaternion(" + nameof(Vector3) + ") constructor instead.", error: true)]
         public void SetEuler(Vector3 eulerYXZ)
         {
-            this = new Quat(eulerYXZ);
+            this = new Quaternion(eulerYXZ);
         }
 
         /// <summary>
@@ -251,12 +251,12 @@ namespace Godot
         /// <param name="to">The destination quaternion for interpolation. Must be normalized.</param>
         /// <param name="weight">A value on the range of 0.0 to 1.0, representing the amount of interpolation.</param>
         /// <returns>The resulting quaternion of the interpolation.</returns>
-        public Quat Slerp(Quat to, real_t weight)
+        public Quaternion Slerp(Quaternion to, real_t weight)
         {
 #if DEBUG
             if (!IsNormalized())
             {
-                throw new InvalidOperationException("Quat is not normalized");
+                throw new InvalidOperationException("Quaternion is not normalized");
             }
             if (!to.IsNormalized())
             {
@@ -267,7 +267,7 @@ namespace Godot
             // Calculate cosine.
             real_t cosom = x * to.x + y * to.y + z * to.z + w * to.w;
 
-            var to1 = new Quat();
+            var to1 = new Quaternion();
 
             // Adjust signs if necessary.
             if (cosom < 0.0)
@@ -299,13 +299,13 @@ namespace Godot
             }
             else
             {
-                // Quaternions are very close so we can do a linear interpolation.
+                // Quaternionernions are very close so we can do a linear interpolation.
                 scale0 = 1.0f - weight;
                 scale1 = weight;
             }
 
             // Calculate final values.
-            return new Quat
+            return new Quaternion
             (
                 (scale0 * x) + (scale1 * to1.x),
                 (scale0 * y) + (scale1 * to1.y),
@@ -322,7 +322,7 @@ namespace Godot
         /// <param name="to">The destination quaternion for interpolation. Must be normalized.</param>
         /// <param name="weight">A value on the range of 0.0 to 1.0, representing the amount of interpolation.</param>
         /// <returns>The resulting quaternion of the interpolation.</returns>
-        public Quat Slerpni(Quat to, real_t weight)
+        public Quaternion Slerpni(Quaternion to, real_t weight)
         {
             real_t dot = Dot(to);
 
@@ -336,7 +336,7 @@ namespace Godot
             real_t newFactor = Mathf.Sin(weight * theta) * sinT;
             real_t invFactor = Mathf.Sin((1.0f - weight) * theta) * sinT;
 
-            return new Quat
+            return new Quaternion
             (
                 (invFactor * x) + (newFactor * to.x),
                 (invFactor * y) + (newFactor * to.y),
@@ -355,7 +355,7 @@ namespace Godot
 #if DEBUG
             if (!IsNormalized())
             {
-                throw new InvalidOperationException("Quat is not normalized");
+                throw new InvalidOperationException("Quaternion is not normalized");
             }
 #endif
             var u = new Vector3(x, y, z);
@@ -364,24 +364,24 @@ namespace Godot
         }
 
         // Constants
-        private static readonly Quat _identity = new Quat(0, 0, 0, 1);
+        private static readonly Quaternion _identity = new Quaternion(0, 0, 0, 1);
 
         /// <summary>
         /// The identity quaternion, representing no rotation.
         /// Equivalent to an identity <see cref="Basis"/> matrix. If a vector is transformed by
         /// an identity quaternion, it will not change.
         /// </summary>
-        /// <value>Equivalent to <c>new Quat(0, 0, 0, 1)</c>.</value>
-        public static Quat Identity { get { return _identity; } }
+        /// <value>Equivalent to <c>new Quaternion(0, 0, 0, 1)</c>.</value>
+        public static Quaternion Identity { get { return _identity; } }
 
         /// <summary>
-        /// Constructs a <see cref="Quat"/> defined by the given values.
+        /// Constructs a <see cref="Quaternion"/> defined by the given values.
         /// </summary>
         /// <param name="x">X component of the quaternion (imaginary <c>i</c> axis part).</param>
         /// <param name="y">Y component of the quaternion (imaginary <c>j</c> axis part).</param>
         /// <param name="z">Z component of the quaternion (imaginary <c>k</c> axis part).</param>
         /// <param name="w">W component of the quaternion (real part).</param>
-        public Quat(real_t x, real_t y, real_t z, real_t w)
+        public Quaternion(real_t x, real_t y, real_t z, real_t w)
         {
             this.x = x;
             this.y = y;
@@ -390,30 +390,30 @@ namespace Godot
         }
 
         /// <summary>
-        /// Constructs a <see cref="Quat"/> from the given <see cref="Quat"/>.
+        /// Constructs a <see cref="Quaternion"/> from the given <see cref="Quaternion"/>.
         /// </summary>
         /// <param name="q">The existing quaternion.</param>
-        public Quat(Quat q)
+        public Quaternion(Quaternion q)
         {
             this = q;
         }
 
         /// <summary>
-        /// Constructs a <see cref="Quat"/> from the given <see cref="Basis"/>.
+        /// Constructs a <see cref="Quaternion"/> from the given <see cref="Basis"/>.
         /// </summary>
         /// <param name="basis">The <see cref="Basis"/> to construct from.</param>
-        public Quat(Basis basis)
+        public Quaternion(Basis basis)
         {
-            this = basis.Quat();
+            this = basis.Quaternion();
         }
 
         /// <summary>
-        /// Constructs a <see cref="Quat"/> that will perform a rotation specified by
+        /// Constructs a <see cref="Quaternion"/> that will perform a rotation specified by
         /// Euler angles (in the YXZ convention: when decomposing, first Z, then X, and Y last),
         /// given in the vector format as (X angle, Y angle, Z angle).
         /// </summary>
         /// <param name="eulerYXZ">Euler angles that the quaternion will be rotated by.</param>
-        public Quat(Vector3 eulerYXZ)
+        public Quaternion(Vector3 eulerYXZ)
         {
             real_t halfA1 = eulerYXZ.y * 0.5f;
             real_t halfA2 = eulerYXZ.x * 0.5f;
@@ -437,12 +437,12 @@ namespace Godot
         }
 
         /// <summary>
-        /// Constructs a <see cref="Quat"/> that will rotate around the given axis
+        /// Constructs a <see cref="Quaternion"/> that will rotate around the given axis
         /// by the specified angle. The axis must be a normalized vector.
         /// </summary>
         /// <param name="axis">The axis to rotate around. Must be normalized.</param>
         /// <param name="angle">The angle to rotate, in radians.</param>
-        public Quat(Vector3 axis, real_t angle)
+        public Quaternion(Vector3 axis, real_t angle)
         {
 #if DEBUG
             if (!axis.IsNormalized())
@@ -481,9 +481,9 @@ namespace Godot
         /// <param name="left">The parent quaternion.</param>
         /// <param name="right">The child quaternion.</param>
         /// <returns>The composed quaternion.</returns>
-        public static Quat operator *(Quat left, Quat right)
+        public static Quaternion operator *(Quaternion left, Quaternion right)
         {
-            return new Quat
+            return new Quaternion
             (
                 (left.w * right.x) + (left.x * right.w) + (left.y * right.z) - (left.z * right.y),
                 (left.w * right.y) + (left.y * right.w) + (left.z * right.x) - (left.x * right.z),
@@ -493,8 +493,8 @@ namespace Godot
         }
 
         /// <summary>
-        /// Adds each component of the left <see cref="Quat"/>
-        /// to the right <see cref="Quat"/>. This operation is not
+        /// Adds each component of the left <see cref="Quaternion"/>
+        /// to the right <see cref="Quaternion"/>. This operation is not
         /// meaningful on its own, but it can be used as a part of a
         /// larger expression, such as approximating an intermediate
         /// rotation between two nearby rotations.
@@ -502,42 +502,42 @@ namespace Godot
         /// <param name="left">The left quaternion to add.</param>
         /// <param name="right">The right quaternion to add.</param>
         /// <returns>The added quaternion.</returns>
-        public static Quat operator +(Quat left, Quat right)
+        public static Quaternion operator +(Quaternion left, Quaternion right)
         {
-            return new Quat(left.x + right.x, left.y + right.y, left.z + right.z, left.w + right.w);
+            return new Quaternion(left.x + right.x, left.y + right.y, left.z + right.z, left.w + right.w);
         }
 
         /// <summary>
-        /// Subtracts each component of the left <see cref="Quat"/>
-        /// by the right <see cref="Quat"/>. This operation is not
+        /// Subtracts each component of the left <see cref="Quaternion"/>
+        /// by the right <see cref="Quaternion"/>. This operation is not
         /// meaningful on its own, but it can be used as a part of a
         /// larger expression.
         /// </summary>
         /// <param name="left">The left quaternion to subtract.</param>
         /// <param name="right">The right quaternion to subtract.</param>
         /// <returns>The subtracted quaternion.</returns>
-        public static Quat operator -(Quat left, Quat right)
+        public static Quaternion operator -(Quaternion left, Quaternion right)
         {
-            return new Quat(left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w);
+            return new Quaternion(left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w);
         }
 
         /// <summary>
-        /// Returns the negative value of the <see cref="Quat"/>.
+        /// Returns the negative value of the <see cref="Quaternion"/>.
         /// This is the same as writing
-        /// <c>new Quat(-q.x, -q.y, -q.z, -q.w)</c>. This operation
+        /// <c>new Quaternion(-q.x, -q.y, -q.z, -q.w)</c>. This operation
         /// results in a quaternion that represents the same rotation.
         /// </summary>
         /// <param name="quat">The quaternion to negate.</param>
         /// <returns>The negated quaternion.</returns>
-        public static Quat operator -(Quat quat)
+        public static Quaternion operator -(Quaternion quat)
         {
-            return new Quat(-quat.x, -quat.y, -quat.z, -quat.w);
+            return new Quaternion(-quat.x, -quat.y, -quat.z, -quat.w);
         }
 
         [Obsolete("This operator does not have the correct behavior and will be replaced in the future. Do not use this.")]
-        public static Quat operator *(Quat left, Vector3 right)
+        public static Quaternion operator *(Quaternion left, Vector3 right)
         {
-            return new Quat
+            return new Quaternion
             (
                 (left.w * right.x) + (left.y * right.z) - (left.z * right.y),
                 (left.w * right.y) + (left.z * right.x) - (left.x * right.z),
@@ -547,9 +547,9 @@ namespace Godot
         }
 
         [Obsolete("This operator does not have the correct behavior and will be replaced in the future. Do not use this.")]
-        public static Quat operator *(Vector3 left, Quat right)
+        public static Quaternion operator *(Vector3 left, Quaternion right)
         {
-            return new Quat
+            return new Quaternion
             (
                 (right.w * left.x) + (right.y * left.z) - (right.z * left.y),
                 (right.w * left.y) + (right.z * left.x) - (right.x * left.z),
@@ -559,7 +559,7 @@ namespace Godot
         }
 
         /// <summary>
-        /// Multiplies each component of the <see cref="Quat"/>
+        /// Multiplies each component of the <see cref="Quaternion"/>
         /// by the given <see cref="real_t"/>. This operation is not
         /// meaningful on its own, but it can be used as a part of a
         /// larger expression.
@@ -567,13 +567,13 @@ namespace Godot
         /// <param name="left">The quaternion to multiply.</param>
         /// <param name="right">The value to multiply by.</param>
         /// <returns>The multiplied quaternion.</returns>
-        public static Quat operator *(Quat left, real_t right)
+        public static Quaternion operator *(Quaternion left, real_t right)
         {
-            return new Quat(left.x * right, left.y * right, left.z * right, left.w * right);
+            return new Quaternion(left.x * right, left.y * right, left.z * right, left.w * right);
         }
 
         /// <summary>
-        /// Multiplies each component of the <see cref="Quat"/>
+        /// Multiplies each component of the <see cref="Quaternion"/>
         /// by the given <see cref="real_t"/>. This operation is not
         /// meaningful on its own, but it can be used as a part of a
         /// larger expression.
@@ -581,13 +581,13 @@ namespace Godot
         /// <param name="left">The value to multiply by.</param>
         /// <param name="right">The quaternion to multiply.</param>
         /// <returns>The multiplied quaternion.</returns>
-        public static Quat operator *(real_t left, Quat right)
+        public static Quaternion operator *(real_t left, Quaternion right)
         {
-            return new Quat(right.x * left, right.y * left, right.z * left, right.w * left);
+            return new Quaternion(right.x * left, right.y * left, right.z * left, right.w * left);
         }
 
         /// <summary>
-        /// Divides each component of the <see cref="Quat"/>
+        /// Divides each component of the <see cref="Quaternion"/>
         /// by the given <see cref="real_t"/>. This operation is not
         /// meaningful on its own, but it can be used as a part of a
         /// larger expression.
@@ -595,7 +595,7 @@ namespace Godot
         /// <param name="left">The quaternion to divide.</param>
         /// <param name="right">The value to divide by.</param>
         /// <returns>The divided quaternion.</returns>
-        public static Quat operator /(Quat left, real_t right)
+        public static Quaternion operator /(Quaternion left, real_t right)
         {
             return left * (1.0f / right);
         }
@@ -608,7 +608,7 @@ namespace Godot
         /// <param name="left">The left quaternion.</param>
         /// <param name="right">The right quaternion.</param>
         /// <returns>Whether or not the quaternions are exactly equal.</returns>
-        public static bool operator ==(Quat left, Quat right)
+        public static bool operator ==(Quaternion left, Quaternion right)
         {
             return left.Equals(right);
         }
@@ -621,7 +621,7 @@ namespace Godot
         /// <param name="left">The left quaternion.</param>
         /// <param name="right">The right quaternion.</param>
         /// <returns>Whether or not the quaternions are not equal.</returns>
-        public static bool operator !=(Quat left, Quat right)
+        public static bool operator !=(Quaternion left, Quaternion right)
         {
             return !left.Equals(right);
         }
@@ -633,9 +633,9 @@ namespace Godot
         /// <returns>Whether or not the quaternion and the other object are exactly equal.</returns>
         public override bool Equals(object obj)
         {
-            if (obj is Quat)
+            if (obj is Quaternion)
             {
-                return Equals((Quat)obj);
+                return Equals((Quaternion)obj);
             }
 
             return false;
@@ -646,7 +646,7 @@ namespace Godot
         /// </summary>
         /// <param name="other">The other quaternion to compare.</param>
         /// <returns>Whether or not the quaternions are exactly equal.</returns>
-        public bool Equals(Quat other)
+        public bool Equals(Quaternion other)
         {
             return x == other.x && y == other.y && z == other.z && w == other.w;
         }
@@ -657,13 +657,13 @@ namespace Godot
         /// </summary>
         /// <param name="other">The other quaternion to compare.</param>
         /// <returns>Whether or not the quaternions are approximately equal.</returns>
-        public bool IsEqualApprox(Quat other)
+        public bool IsEqualApprox(Quaternion other)
         {
             return Mathf.IsEqualApprox(x, other.x) && Mathf.IsEqualApprox(y, other.y) && Mathf.IsEqualApprox(z, other.z) && Mathf.IsEqualApprox(w, other.w);
         }
 
         /// <summary>
-        /// Serves as the hash function for <see cref="Quat"/>.
+        /// Serves as the hash function for <see cref="Quaternion"/>.
         /// </summary>
         /// <returns>A hash code for this quaternion.</returns>
         public override int GetHashCode()
@@ -672,7 +672,7 @@ namespace Godot
         }
 
         /// <summary>
-        /// Converts this <see cref="Quat"/> to a string.
+        /// Converts this <see cref="Quaternion"/> to a string.
         /// </summary>
         /// <returns>A string representation of this quaternion.</returns>
         public override string ToString()
@@ -681,7 +681,7 @@ namespace Godot
         }
 
         /// <summary>
-        /// Converts this <see cref="Quat"/> to a string with the given <paramref name="format"/>.
+        /// Converts this <see cref="Quaternion"/> to a string with the given <paramref name="format"/>.
         /// </summary>
         /// <returns>A string representation of this quaternion.</returns>
         public string ToString(string format)

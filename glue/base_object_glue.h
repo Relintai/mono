@@ -33,8 +33,8 @@
 
 #ifdef MONO_GLUE_ENABLED
 
-#include "core/class_db.h"
-#include "core/object.h"
+#include "core/object/class_db.h"
+#include "core/object/object.h"
 
 #include "../mono_gd/gd_mono_marshal.h"
 

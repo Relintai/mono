@@ -30,7 +30,7 @@
 
 #include "script_class_parser.h"
 
-#include "core/map.h"
+#include "core/containers/rb_map.h"
 #include "core/os/os.h"
 
 #include "../utils/string_utils.h"
@@ -504,7 +504,7 @@ Error ScriptClassParser::parse(const String &p_code) {
 
 	Token tk = get_token();
 
-	Map<int, NameDecl> name_stack;
+	RBMap<int, NameDecl> name_stack;
 	int curly_stack = 0;
 	int type_curly_stack = 0;
 
@@ -521,7 +521,7 @@ Error ScriptClassParser::parse(const String &p_code) {
 
 				ClassDecl class_decl;
 
-				for (Map<int, NameDecl>::Element *E = name_stack.front(); E; E = E->next()) {
+				for (RBMap<int, NameDecl>::Element *E = name_stack.front(); E; E = E->next()) {
 					const NameDecl &name_decl = E->value();
 
 					if (name_decl.type == NameDecl::NAMESPACE_DECL) {

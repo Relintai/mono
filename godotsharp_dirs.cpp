@@ -32,7 +32,7 @@
 
 #include "core/os/dir_access.h"
 #include "core/os/os.h"
-#include "core/project_settings.h"
+#include "core/config/project_settings.h"
 
 #ifdef TOOLS_ENABLED
 #include "core/version.h"
@@ -75,7 +75,7 @@ String _get_mono_user_dir() {
 			// contain yourself
 			settings_path = exe_dir.plus_file("editor_data");
 		} else {
-			settings_path = OS::get_singleton()->get_data_path().plus_file(OS::get_singleton()->get_godot_dir_name());
+			settings_path = OS::get_singleton()->get_data_path().plus_file(OS::get_singleton()->get_pandemonium_dir_name());
 		}
 
 		return settings_path.plus_file("mono");

@@ -31,14 +31,15 @@
 #ifndef BINDINGS_GENERATOR_H
 #define BINDINGS_GENERATOR_H
 
-#include "core/class_db.h"
-#include "core/string_builder.h"
+#include "core/object/class_db.h"
+#include "core/containers/ordered_hash_map.h"
+#include "core/string/string_builder.h"
 #include "editor/doc/doc_data.h"
 #include "editor/editor_help.h"
 
 #if defined(DEBUG_METHODS_ENABLED) && defined(TOOLS_ENABLED)
 
-#include "core/ustring.h"
+#include "core/string/ustring.h"
 
 class BindingsGenerator {
 	struct ConstantInterface {
@@ -493,22 +494,22 @@ class BindingsGenerator {
 
 	OrderedHashMap<StringName, TypeInterface> obj_types;
 
-	Map<StringName, TypeInterface> placeholder_types;
-	Map<StringName, TypeInterface> builtin_types;
-	Map<StringName, TypeInterface> enum_types;
+	RBMap<StringName, TypeInterface> placeholder_types;
+	RBMap<StringName, TypeInterface> builtin_types;
+	RBMap<StringName, TypeInterface> enum_types;
 
 	List<EnumInterface> global_enums;
 	List<ConstantInterface> global_constants;
 
 	List<InternalCall> method_icalls;
-	Map<const MethodInterface *, const InternalCall *> method_icalls_map;
+	RBMap<const MethodInterface *, const InternalCall *> method_icalls_map;
 
 	List<const InternalCall *> generated_icall_funcs;
 
 	List<InternalCall> core_custom_icalls;
 	List<InternalCall> editor_custom_icalls;
 
-	Map<StringName, List<StringName>> blacklisted_methods;
+	RBMap<StringName, List<StringName>> blacklisted_methods;
 
 	void _initialize_blacklisted_methods();
 
@@ -617,8 +618,8 @@ class BindingsGenerator {
 	const TypeInterface *_get_type_or_null(const TypeReference &p_typeref);
 	const TypeInterface *_get_type_or_placeholder(const TypeReference &p_typeref);
 
-	StringName _get_int_type_name_from_meta(GodotTypeInfo::Metadata p_meta);
-	StringName _get_float_type_name_from_meta(GodotTypeInfo::Metadata p_meta);
+	StringName _get_int_type_name_from_meta(PandemoniumTypeInfo::Metadata p_meta);
+	StringName _get_float_type_name_from_meta(PandemoniumTypeInfo::Metadata p_meta);
 
 	bool _arg_default_value_from_variant(const Variant &p_val, ArgumentInterface &r_iarg);
 

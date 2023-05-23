@@ -32,13 +32,13 @@
 
 #if defined(DEBUG_METHODS_ENABLED) && defined(TOOLS_ENABLED)
 
-#include "core/engine.h"
+#include "core/config/engine.h"
 #include "core/global_constants.h"
 #include "core/io/compression.h"
 #include "core/os/dir_access.h"
 #include "core/os/file_access.h"
 #include "core/os/os.h"
-#include "core/ucaps.h"
+#include "core/string/ucaps.h"
 #include "main/main.h"
 
 #include "../glue/cs_glue_version.gen.h"
@@ -556,7 +556,7 @@ void BindingsGenerator::_append_xml_member(StringBuilder &p_xml_output, const Ty
 void BindingsGenerator::_append_xml_enum(StringBuilder &p_xml_output, const TypeInterface *p_target_itype, const StringName &p_target_cname, const String &p_link_target, const Vector<String> &p_link_target_parts) {
 	const StringName search_cname = !p_target_itype ? p_target_cname : StringName(p_target_itype->name + "." + (String)p_target_cname);
 
-	const Map<StringName, TypeInterface>::Element *enum_match = enum_types.find(search_cname);
+	const RBMap<StringName, TypeInterface>::Element *enum_match = enum_types.find(search_cname);
 
 	if (!enum_match && search_cname != p_target_cname) {
 		enum_match = enum_types.find(p_target_cname);
@@ -1747,7 +1747,7 @@ Error BindingsGenerator::_generate_cs_method(const BindingsGenerator::TypeInterf
 			return OK; // Won't increment method bind count
 		}
 
-		const Map<const MethodInterface *, const InternalCall *>::Element *match = method_icalls_map.find(&p_imethod);
+		const RBMap<const MethodInterface *, const InternalCall *>::Element *match = method_icalls_map.find(&p_imethod);
 		ERR_FAIL_NULL_V(match, ERR_BUG);
 
 		const InternalCall *im_icall = match->value();
@@ -2011,7 +2011,7 @@ Error BindingsGenerator::_generate_glue_method(const BindingsGenerator::TypeInte
 		i++;
 	}
 
-	const Map<const MethodInterface *, const InternalCall *>::Element *match = method_icalls_map.find(&p_imethod);
+	const RBMap<const MethodInterface *, const InternalCall *>::Element *match = method_icalls_map.find(&p_imethod);
 	ERR_FAIL_NULL_V(match, ERR_BUG);
 
 	const InternalCall *im_icall = match->value();
@@ -2147,7 +2147,7 @@ Error BindingsGenerator::_generate_glue_method(const BindingsGenerator::TypeInte
 }
 
 const BindingsGenerator::TypeInterface *BindingsGenerator::_get_type_or_null(const TypeReference &p_typeref) {
-	const Map<StringName, TypeInterface>::Element *builtin_type_match = builtin_types.find(p_typeref.cname);
+	const RBMap<StringName, TypeInterface>::Element *builtin_type_match = builtin_types.find(p_typeref.cname);
 
 	if (builtin_type_match)
 		return &builtin_type_match->get();
@@ -2158,13 +2158,13 @@ const BindingsGenerator::TypeInterface *BindingsGenerator::_get_type_or_null(con
 		return &obj_type_match.get();
 
 	if (p_typeref.is_enum) {
-		const Map<StringName, TypeInterface>::Element *enum_match = enum_types.find(p_typeref.cname);
+		const RBMap<StringName, TypeInterface>::Element *enum_match = enum_types.find(p_typeref.cname);
 
 		if (enum_match)
 			return &enum_match->get();
 
 		// Enum not found. Most likely because none of its constants were bound, so it's empty. That's fine. Use int instead.
-		const Map<StringName, TypeInterface>::Element *int_match = builtin_types.find(name_cache.type_int);
+		const RBMap<StringName, TypeInterface>::Element *int_match = builtin_types.find(name_cache.type_int);
 		ERR_FAIL_NULL_V(int_match, NULL);
 		return &int_match->get();
 	}
@@ -2180,7 +2180,7 @@ const BindingsGenerator::TypeInterface *BindingsGenerator::_get_type_or_placehol
 
 	ERR_PRINT(String() + "Type not found. Creating placeholder: '" + p_typeref.cname.operator String() + "'.");
 
-	const Map<StringName, TypeInterface>::Element *match = placeholder_types.find(p_typeref.cname);
+	const RBMap<StringName, TypeInterface>::Element *match = placeholder_types.find(p_typeref.cname);
 
 	if (match)
 		return &match->get();
@@ -2191,30 +2191,30 @@ const BindingsGenerator::TypeInterface *BindingsGenerator::_get_type_or_placehol
 	return &placeholder_types.insert(placeholder.cname, placeholder)->get();
 }
 
-StringName BindingsGenerator::_get_int_type_name_from_meta(GodotTypeInfo::Metadata p_meta) {
+StringName BindingsGenerator::_get_int_type_name_from_meta(PandemoniumTypeInfo::Metadata p_meta) {
 	switch (p_meta) {
-		case GodotTypeInfo::METADATA_INT_IS_INT8:
+		case PandemoniumTypeInfo::METADATA_INT_IS_INT8:
 			return "sbyte";
 			break;
-		case GodotTypeInfo::METADATA_INT_IS_INT16:
+		case PandemoniumTypeInfo::METADATA_INT_IS_INT16:
 			return "short";
 			break;
-		case GodotTypeInfo::METADATA_INT_IS_INT32:
+		case PandemoniumTypeInfo::METADATA_INT_IS_INT32:
 			return "int";
 			break;
-		case GodotTypeInfo::METADATA_INT_IS_INT64:
+		case PandemoniumTypeInfo::METADATA_INT_IS_INT64:
 			return "long";
 			break;
-		case GodotTypeInfo::METADATA_INT_IS_UINT8:
+		case PandemoniumTypeInfo::METADATA_INT_IS_UINT8:
 			return "byte";
 			break;
-		case GodotTypeInfo::METADATA_INT_IS_UINT16:
+		case PandemoniumTypeInfo::METADATA_INT_IS_UINT16:
 			return "ushort";
 			break;
-		case GodotTypeInfo::METADATA_INT_IS_UINT32:
+		case PandemoniumTypeInfo::METADATA_INT_IS_UINT32:
 			return "uint";
 			break;
-		case GodotTypeInfo::METADATA_INT_IS_UINT64:
+		case PandemoniumTypeInfo::METADATA_INT_IS_UINT64:
 			return "ulong";
 			break;
 		default:
@@ -2223,12 +2223,12 @@ StringName BindingsGenerator::_get_int_type_name_from_meta(GodotTypeInfo::Metada
 	}
 }
 
-StringName BindingsGenerator::_get_float_type_name_from_meta(GodotTypeInfo::Metadata p_meta) {
+StringName BindingsGenerator::_get_float_type_name_from_meta(PandemoniumTypeInfo::Metadata p_meta) {
 	switch (p_meta) {
-		case GodotTypeInfo::METADATA_REAL_IS_FLOAT:
+		case PandemoniumTypeInfo::METADATA_REAL_IS_FLOAT:
 			return "float";
 			break;
-		case GodotTypeInfo::METADATA_REAL_IS_DOUBLE:
+		case PandemoniumTypeInfo::METADATA_REAL_IS_DOUBLE:
 			return "double";
 			break;
 		default:
@@ -2298,7 +2298,7 @@ bool BindingsGenerator::_populate_object_type_interfaces() {
 		List<PropertyInfo> property_list;
 		ClassDB::get_property_list(type_cname, &property_list, true);
 
-		Map<StringName, StringName> accessor_methods;
+		RBMap<StringName, StringName> accessor_methods;
 
 		for (const List<PropertyInfo>::Element *E = property_list.front(); E; E = E->next()) {
 			const PropertyInfo &property = E->get();
@@ -2423,9 +2423,9 @@ bool BindingsGenerator::_populate_object_type_interfaces() {
 				imethod.return_type.cname = name_cache.type_void;
 			} else {
 				if (return_info.type == Variant::INT) {
-					imethod.return_type.cname = _get_int_type_name_from_meta(m ? m->get_argument_meta(-1) : GodotTypeInfo::METADATA_NONE);
+					imethod.return_type.cname = _get_int_type_name_from_meta(m ? m->get_argument_meta(-1) : PandemoniumTypeInfo::METADATA_NONE);
 				} else if (return_info.type == Variant::REAL) {
-					imethod.return_type.cname = _get_float_type_name_from_meta(m ? m->get_argument_meta(-1) : GodotTypeInfo::METADATA_NONE);
+					imethod.return_type.cname = _get_float_type_name_from_meta(m ? m->get_argument_meta(-1) : PandemoniumTypeInfo::METADATA_NONE);
 				} else {
 					imethod.return_type.cname = Variant::get_type_name(return_info.type);
 				}
@@ -2450,9 +2450,9 @@ bool BindingsGenerator::_populate_object_type_interfaces() {
 					iarg.type.cname = name_cache.type_Variant;
 				} else {
 					if (arginfo.type == Variant::INT) {
-						iarg.type.cname = _get_int_type_name_from_meta(m ? m->get_argument_meta(i) : GodotTypeInfo::METADATA_NONE);
+						iarg.type.cname = _get_int_type_name_from_meta(m ? m->get_argument_meta(i) : PandemoniumTypeInfo::METADATA_NONE);
 					} else if (arginfo.type == Variant::REAL) {
-						iarg.type.cname = _get_float_type_name_from_meta(m ? m->get_argument_meta(i) : GodotTypeInfo::METADATA_NONE);
+						iarg.type.cname = _get_float_type_name_from_meta(m ? m->get_argument_meta(i) : PandemoniumTypeInfo::METADATA_NONE);
 					} else {
 						iarg.type.cname = Variant::get_type_name(arginfo.type);
 					}
@@ -2486,7 +2486,7 @@ bool BindingsGenerator::_populate_object_type_interfaces() {
 				imethod.proxy_name += "_";
 			}
 
-			Map<StringName, StringName>::Element *accessor = accessor_methods.find(imethod.cname);
+			RBMap<StringName, StringName>::Element *accessor = accessor_methods.find(imethod.cname);
 			if (accessor) {
 				const PropertyInterface *accessor_property = itype.find_property_by_name(accessor->value());
 
@@ -2673,7 +2673,7 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 			r_iarg.default_argument = "new %s()";
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_REF;
 			break;
-		case Variant::_RID:
+		case Variant::RID:
 			ERR_FAIL_COND_V_MSG(r_iarg.type.cname != name_cache.type_RID, false,
 					"Parameter of type '" + String(r_iarg.type.cname) + "' cannot have a default value of type '" + String(name_cache.type_RID) + "'.");
 
@@ -2701,7 +2701,7 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 			if (transform == Transform2D()) {
 				r_iarg.default_argument = "Transform2D.Identity";
 			} else {
-				r_iarg.default_argument = "new Transform2D(new Vector2" + transform.elements[0].operator String() + ", new Vector2" + transform.elements[1].operator String() + ", new Vector2" + transform.elements[2].operator String() + ")";
+				r_iarg.default_argument = "new Transform2D(new Vector2" + transform.columns[0].operator String() + ", new Vector2" + transform.columns[1].operator String() + ", new Vector2" + transform.columns[2].operator String() + ")";
 			}
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
@@ -2724,12 +2724,12 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 			}
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
-		case Variant::QUAT: {
-			Quat quat = p_val.operator Quat();
-			if (quat == Quat()) {
-				r_iarg.default_argument = "Quat.Identity";
+		case Variant::QUATERNION: {
+			Quaternion quat = p_val.operator Quaternion();
+			if (quat == Quaternion()) {
+				r_iarg.default_argument = "Quaternion.Identity";
 			} else {
-				r_iarg.default_argument = "new Quat" + quat.operator String();
+				r_iarg.default_argument = "new Quaternion" + quat.operator String();
 			}
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
@@ -2770,7 +2770,7 @@ void BindingsGenerator::_populate_builtin_type_interfaces() {
 	INSERT_STRUCT_TYPE(Transform2D)
 	INSERT_STRUCT_TYPE(Vector3)
 	INSERT_STRUCT_TYPE(Basis)
-	INSERT_STRUCT_TYPE(Quat)
+	INSERT_STRUCT_TYPE(Quaternion)
 	INSERT_STRUCT_TYPE(Transform)
 	INSERT_STRUCT_TYPE(AABB)
 	INSERT_STRUCT_TYPE(Color)
@@ -3027,7 +3027,7 @@ void BindingsGenerator::_populate_global_constants() {
 	int global_constants_count = GlobalConstants::get_global_constant_count();
 
 	if (global_constants_count > 0) {
-		Map<String, DocData::ClassDoc>::Element *match = EditorHelp::get_doc_data()->class_list.find("@GlobalScope");
+		RBMap<String, DocData::ClassDoc>::Element *match = EditorHelp::get_doc_data()->class_list.find("@GlobalScope");
 
 		CRASH_COND_MSG(!match, "Could not find '@GlobalScope' in DocData.");
 

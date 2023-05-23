@@ -41,8 +41,8 @@
 #include "gd_mono_wasm_m2n.h"
 #endif
 
-#include "core/object.h"
-#include "core/reference.h"
+#include "core/object/object.h"
+#include "core/object/reference.h"
 
 #define UNHANDLED_EXCEPTION(m_exc)                     \
 	if (unlikely(m_exc != NULL)) {                     \

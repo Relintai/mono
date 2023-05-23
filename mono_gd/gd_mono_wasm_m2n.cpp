@@ -32,7 +32,7 @@
 
 #ifdef JAVASCRIPT_ENABLED
 
-#include "core/oa_hash_map.h"
+#include "core/containers/oa_hash_map.h"
 
 typedef mono_bool (*GodotMonoM2nIcallTrampolineDispatch)(const char *cookie, void *target_func, Mono_InterpMethodArguments *margs);
 

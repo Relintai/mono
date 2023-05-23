@@ -32,7 +32,7 @@
 
 #ifdef MONO_GLUE_ENABLED
 
-#include "core/ustring.h"
+#include "core/string/ustring.h"
 
 NodePath *godot_icall_NodePath_Ctor(MonoString *p_path) {
 	return memnew(NodePath(GDMonoMarshal::mono_string_to_godot(p_path)));

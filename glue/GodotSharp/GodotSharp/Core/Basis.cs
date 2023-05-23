@@ -226,12 +226,12 @@ namespace Godot
 
         /// <summary>
         /// Returns the <see cref="Basis"/>'s rotation in the form of a
-        /// <see cref="Quat"/>. See <see cref="GetEuler"/> if you
+        /// <see cref="Quaternion"/>. See <see cref="GetEuler"/> if you
         /// need Euler angles, but keep in mind quaternions should generally
         /// be preferred to Euler angles.
         /// </summary>
         /// <returns>The basis rotation.</returns>
-        public Quat RotationQuat()
+        public Quaternion RotationQuaternion()
         {
             Basis orthonormalizedBasis = Orthonormalized();
             real_t det = orthonormalizedBasis.Determinant();
@@ -242,16 +242,16 @@ namespace Godot
                 orthonormalizedBasis = orthonormalizedBasis.Scaled(-Vector3.One);
             }
 
-            return orthonormalizedBasis.Quat();
+            return orthonormalizedBasis.Quaternion();
         }
 
-        internal void SetQuatScale(Quat quaternion, Vector3 scale)
+        internal void SetQuaternionScale(Quaternion quaternion, Vector3 scale)
         {
             SetDiagonal(scale);
             Rotate(quaternion);
         }
 
-        private void Rotate(Quat quaternion)
+        private void Rotate(Quaternion quaternion)
         {
             this *= new Basis(quaternion);
         }
@@ -287,8 +287,8 @@ namespace Godot
         /// The returned vector contains the rotation angles in
         /// the format (X angle, Y angle, Z angle).
         ///
-        /// Consider using the <see cref="RotationQuat"/> method instead, which
-        /// returns a <see cref="Godot.Quat"/> quaternion instead of Euler angles.
+        /// Consider using the <see cref="RotationQuaternion"/> method instead, which
+        /// returns a <see cref="Godot.Quaternion"/> quaternion instead of Euler angles.
         /// </summary>
         /// <returns>A <see cref="Vector3"/> representing the basis rotation in Euler angles.</returns>
         public Vector3 GetEuler()
@@ -303,8 +303,8 @@ namespace Godot
         /// first Z, then X, and Y last. The returned vector contains
         /// the rotation angles in the format (X angle, Y angle, Z angle).
         ///
-        /// Consider using the <see cref="RotationQuat"/> method instead, which
-        /// returns a <see cref="Godot.Quat"/> quaternion instead of Euler angles.
+        /// Consider using the <see cref="RotationQuaternion"/> method instead, which
+        /// returns a <see cref="Godot.Quaternion"/> quaternion instead of Euler angles.
         /// </summary>
         /// <param name="order">The Euler order to use.</param>
         /// <returns>A <see cref="Vector3"/> representing the basis rotation in Euler angles.</returns>
@@ -772,8 +772,8 @@ namespace Godot
         /// <returns>The resulting basis matrix of the interpolation.</returns>
         public Basis Slerp(Basis target, real_t weight)
         {
-            Quat from = new Quat(this);
-            Quat to = new Quat(target);
+            Quaternion from = new Quaternion(this);
+            Quaternion to = new Quaternion(target);
 
             Basis b = new Basis(from.Slerp(to, weight));
             b.Row0 *= Mathf.Lerp(Row0.Length(), target.Row0.Length(), weight);
@@ -876,8 +876,8 @@ namespace Godot
         /// See <see cref="GetEuler"/> if you need Euler angles, but keep in
         /// mind that quaternions should generally be preferred to Euler angles.
         /// </summary>
-        /// <returns>A <see cref="Godot.Quat"/> representing the basis's rotation.</returns>
-        public Quat Quat()
+        /// <returns>A <see cref="Godot.Quaternion"/> representing the basis's rotation.</returns>
+        public Quaternion Quaternion()
         {
             real_t trace = Row0[0] + Row1[1] + Row2[2];
 
@@ -885,7 +885,7 @@ namespace Godot
             {
                 real_t s = Mathf.Sqrt(trace + 1.0f) * 2f;
                 real_t inv_s = 1f / s;
-                return new Quat(
+                return new Quaternion(
                     (Row2[1] - Row1[2]) * inv_s,
                     (Row0[2] - Row2[0]) * inv_s,
                     (Row1[0] - Row0[1]) * inv_s,
@@ -897,7 +897,7 @@ namespace Godot
             {
                 real_t s = Mathf.Sqrt(Row0[0] - Row1[1] - Row2[2] + 1.0f) * 2f;
                 real_t inv_s = 1f / s;
-                return new Quat(
+                return new Quaternion(
                     s * 0.25f,
                     (Row0[1] + Row1[0]) * inv_s,
                     (Row0[2] + Row2[0]) * inv_s,
@@ -909,7 +909,7 @@ namespace Godot
             {
                 real_t s = Mathf.Sqrt(-Row0[0] + Row1[1] - Row2[2] + 1.0f) * 2f;
                 real_t inv_s = 1f / s;
-                return new Quat(
+                return new Quaternion(
                     (Row0[1] + Row1[0]) * inv_s,
                     s * 0.25f,
                     (Row1[2] + Row2[1]) * inv_s,
@@ -920,7 +920,7 @@ namespace Godot
             {
                 real_t s = Mathf.Sqrt(-Row0[0] - Row1[1] + Row2[2] + 1.0f) * 2f;
                 real_t inv_s = 1f / s;
-                return new Quat(
+                return new Quaternion(
                     (Row0[2] + Row2[0]) * inv_s,
                     (Row1[2] + Row2[1]) * inv_s,
                     s * 0.25f,
@@ -988,7 +988,7 @@ namespace Godot
         /// Constructs a pure rotation basis matrix from the given quaternion.
         /// </summary>
         /// <param name="quaternion">The quaternion to create the basis from.</param>
-        public Basis(Quat quaternion)
+        public Basis(Quaternion quaternion)
         {
             real_t s = 2.0f / quaternion.LengthSquared;
 
@@ -1015,8 +1015,8 @@ namespace Godot
         /// (in the YXZ convention: when *composing*, first Y, then X, and Z last),
         /// given in the vector format as (X angle, Y angle, Z angle).
         ///
-        /// Consider using the <see cref="Basis(Quat)"/> constructor instead, which
-        /// uses a <see cref="Godot.Quat"/> quaternion instead of Euler angles.
+        /// Consider using the <see cref="Basis(Quaternion)"/> constructor instead, which
+        /// uses a <see cref="Godot.Quaternion"/> quaternion instead of Euler angles.
         /// </summary>
         /// <param name="eulerYXZ">The Euler angles to create the basis from.</param>
         public Basis(Vector3 eulerYXZ)

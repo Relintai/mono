@@ -31,9 +31,9 @@
 #ifndef SCRIPT_CLASS_PARSER_H
 #define SCRIPT_CLASS_PARSER_H
 
-#include "core/ustring.h"
-#include "core/variant.h"
-#include "core/vector.h"
+#include "core/string/ustring.h"
+#include "core/variant/variant.h"
+#include "core/containers/vector.h"
 
 class ScriptClassParser {
 public:

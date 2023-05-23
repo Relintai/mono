@@ -31,8 +31,8 @@
 #ifndef GD_MONO_CLASS_H
 #define GD_MONO_CLASS_H
 
-#include "core/map.h"
-#include "core/ustring.h"
+#include "core/containers/rb_map.h"
+#include "core/string/ustring.h"
 
 #include "gd_mono_field.h"
 #include "gd_mono_header.h"
@@ -86,15 +86,15 @@ class GDMonoClass {
 	Vector<GDMonoMethod *> method_list;
 
 	bool fields_fetched;
-	Map<StringName, GDMonoField *> fields;
+	RBMap<StringName, GDMonoField *> fields;
 	Vector<GDMonoField *> fields_list;
 
 	bool properties_fetched;
-	Map<StringName, GDMonoProperty *> properties;
+	RBMap<StringName, GDMonoProperty *> properties;
 	Vector<GDMonoProperty *> properties_list;
 
 	bool delegates_fetched;
-	Map<StringName, GDMonoClass *> delegates;
+	RBMap<StringName, GDMonoClass *> delegates;
 	Vector<GDMonoClass *> delegates_list;
 
 	friend class GDMonoAssembly;

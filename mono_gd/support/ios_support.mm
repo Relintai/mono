@@ -35,7 +35,7 @@
 #import <Foundation/Foundation.h>
 #include <os/log.h>
 
-#include "core/ustring.h"
+#include "core/string/ustring.h"
 
 #include "../gd_mono_marshal.h"
 

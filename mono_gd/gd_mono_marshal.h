@@ -31,7 +31,7 @@
 #ifndef GD_MONO_MARSHAL_H
 #define GD_MONO_MARSHAL_H
 
-#include "core/variant.h"
+#include "core/variant/variant.h"
 
 #include "gd_mono.h"
 #include "gd_mono_utils.h"
@@ -91,7 +91,7 @@ _FORCE_INLINE_ MonoString *mono_from_utf8_string(const String &p_string) {
 }
 
 _FORCE_INLINE_ MonoString *mono_from_utf16_string(const String &p_string) {
-	return mono_string_from_utf16((mono_unichar2 *)p_string.c_str());
+	return mono_string_from_utf16((mono_unichar2 *)p_string.get_data());
 }
 
 _FORCE_INLINE_ MonoString *mono_string_from_godot(const String &p_string) {
@@ -228,11 +228,11 @@ enum {
 
 	MATCHES_Basis = (MATCHES_Vector3 && (sizeof(Basis) == (sizeof(Vector3) * 3))), // No field offset required, it stores an array
 
-	MATCHES_Quat = (MATCHES_real_t && (sizeof(Quat) == (sizeof(real_t) * 4)) &&
-			offsetof(Quat, x) == (sizeof(real_t) * 0) &&
-			offsetof(Quat, y) == (sizeof(real_t) * 1) &&
-			offsetof(Quat, z) == (sizeof(real_t) * 2) &&
-			offsetof(Quat, w) == (sizeof(real_t) * 3)),
+	MATCHES_Quaternion = (MATCHES_real_t && (sizeof(Quaternion) == (sizeof(real_t) * 4)) &&
+			offsetof(Quaternion, x) == (sizeof(real_t) * 0) &&
+			offsetof(Quaternion, y) == (sizeof(real_t) * 1) &&
+			offsetof(Quaternion, z) == (sizeof(real_t) * 2) &&
+			offsetof(Quaternion, w) == (sizeof(real_t) * 3)),
 
 	MATCHES_Transform = (MATCHES_Basis && MATCHES_Vector3 && (sizeof(Transform) == (sizeof(Basis) + sizeof(Vector3))) &&
 			offsetof(Transform, basis) == 0 &&
@@ -257,7 +257,7 @@ enum {
 #ifdef GD_MONO_FORCE_INTEROP_STRUCT_COPY
 /* clang-format off */
 GD_STATIC_ASSERT(MATCHES_Vector2 && MATCHES_Rect2 && MATCHES_Transform2D && MATCHES_Vector3 &&
-				MATCHES_Basis && MATCHES_Quat && MATCHES_Transform && MATCHES_AABB && MATCHES_Color &&MATCHES_Plane);
+				MATCHES_Basis && MATCHES_Quaternion && MATCHES_Transform && MATCHES_AABB && MATCHES_Color &&MATCHES_Plane);
 /* clang-format on */
 #endif
 
@@ -294,19 +294,19 @@ struct M_Rect2 {
 };
 
 struct M_Transform2D {
-	M_Vector2 elements[3];
+	M_Vector2 columns[3];
 
 	static _FORCE_INLINE_ Transform2D convert_to(const M_Transform2D &p_from) {
-		return Transform2D(p_from.elements[0].x, p_from.elements[0].y,
-				p_from.elements[1].x, p_from.elements[1].y,
-				p_from.elements[2].x, p_from.elements[2].y);
+		return Transform2D(p_from.columns[0].x, p_from.columns[0].y,
+				p_from.columns[1].x, p_from.columns[1].y,
+				p_from.columns[2].x, p_from.columns[2].y);
 	}
 
 	static _FORCE_INLINE_ M_Transform2D convert_from(const Transform2D &p_from) {
 		M_Transform2D ret = {
-			M_Vector2::convert_from(p_from.elements[0]),
-			M_Vector2::convert_from(p_from.elements[1]),
-			M_Vector2::convert_from(p_from.elements[2])
+			M_Vector2::convert_from(p_from.columns[0]),
+			M_Vector2::convert_from(p_from.columns[1]),
+			M_Vector2::convert_from(p_from.columns[2])
 		};
 		return ret;
 	}
@@ -326,33 +326,33 @@ struct M_Vector3 {
 };
 
 struct M_Basis {
-	M_Vector3 elements[3];
+	M_Vector3 rows[3];
 
 	static _FORCE_INLINE_ Basis convert_to(const M_Basis &p_from) {
-		return Basis(M_Vector3::convert_to(p_from.elements[0]),
-				M_Vector3::convert_to(p_from.elements[1]),
-				M_Vector3::convert_to(p_from.elements[2]));
+		return Basis(M_Vector3::convert_to(p_from.rows[0]),
+				M_Vector3::convert_to(p_from.rows[1]),
+				M_Vector3::convert_to(p_from.rows[2]));
 	}
 
 	static _FORCE_INLINE_ M_Basis convert_from(const Basis &p_from) {
 		M_Basis ret = {
-			M_Vector3::convert_from(p_from.elements[0]),
-			M_Vector3::convert_from(p_from.elements[1]),
-			M_Vector3::convert_from(p_from.elements[2])
+			M_Vector3::convert_from(p_from.rows[0]),
+			M_Vector3::convert_from(p_from.rows[1]),
+			M_Vector3::convert_from(p_from.rows[2])
 		};
 		return ret;
 	}
 };
 
-struct M_Quat {
+struct M_Quaternion {
 	real_t x, y, z, w;
 
-	static _FORCE_INLINE_ Quat convert_to(const M_Quat &p_from) {
-		return Quat(p_from.x, p_from.y, p_from.z, p_from.w);
+	static _FORCE_INLINE_ Quaternion convert_to(const M_Quaternion &p_from) {
+		return Quaternion(p_from.x, p_from.y, p_from.z, p_from.w);
 	}
 
-	static _FORCE_INLINE_ M_Quat convert_from(const Quat &p_from) {
-		M_Quat ret = { p_from.x, p_from.y, p_from.z, p_from.w };
+	static _FORCE_INLINE_ M_Quaternion convert_from(const Quaternion &p_from) {
+		M_Quaternion ret = { p_from.x, p_from.y, p_from.z, p_from.w };
 		return ret;
 	}
 };
@@ -454,7 +454,7 @@ DECL_TYPE_MARSHAL_TEMPLATES(Rect2)
 DECL_TYPE_MARSHAL_TEMPLATES(Transform2D)
 DECL_TYPE_MARSHAL_TEMPLATES(Vector3)
 DECL_TYPE_MARSHAL_TEMPLATES(Basis)
-DECL_TYPE_MARSHAL_TEMPLATES(Quat)
+DECL_TYPE_MARSHAL_TEMPLATES(Quaternion)
 DECL_TYPE_MARSHAL_TEMPLATES(Transform)
 DECL_TYPE_MARSHAL_TEMPLATES(AABB)
 DECL_TYPE_MARSHAL_TEMPLATES(Color)

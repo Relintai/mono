@@ -33,7 +33,7 @@
 
 #include <mono/jit/jit.h>
 
-#include "core/reference.h"
+#include "core/object/reference.h"
 
 class MonoGCHandle : public Reference {
 	GDCLASS(MonoGCHandle, Reference);

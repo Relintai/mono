@@ -106,7 +106,7 @@ void CachedData::clear_godot_api_cache() {
 	class_Transform2D = NULL;
 	class_Vector3 = NULL;
 	class_Basis = NULL;
-	class_Quat = NULL;
+	class_Quaternion = NULL;
 	class_Transform = NULL;
 	class_AABB = NULL;
 	class_Color = NULL;
@@ -222,7 +222,7 @@ void update_godot_api_cache() {
 	CACHE_CLASS_AND_CHECK(Transform2D, GODOT_API_CLASS(Transform2D));
 	CACHE_CLASS_AND_CHECK(Vector3, GODOT_API_CLASS(Vector3));
 	CACHE_CLASS_AND_CHECK(Basis, GODOT_API_CLASS(Basis));
-	CACHE_CLASS_AND_CHECK(Quat, GODOT_API_CLASS(Quat));
+	CACHE_CLASS_AND_CHECK(Quaternion, GODOT_API_CLASS(Quaternion));
 	CACHE_CLASS_AND_CHECK(Transform, GODOT_API_CLASS(Transform));
 	CACHE_CLASS_AND_CHECK(AABB, GODOT_API_CLASS(AABB));
 	CACHE_CLASS_AND_CHECK(Color, GODOT_API_CLASS(Color));

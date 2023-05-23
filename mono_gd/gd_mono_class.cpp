@@ -346,7 +346,7 @@ GDMonoMethod *GDMonoClass::get_method_with_desc(const String &p_description, boo
 }
 
 GDMonoField *GDMonoClass::get_field(const StringName &p_name) {
-	Map<StringName, GDMonoField *>::Element *result = fields.find(p_name);
+	RBMap<StringName, GDMonoField *>::Element *result = fields.find(p_name);
 
 	if (result)
 		return result->value();
@@ -375,7 +375,7 @@ const Vector<GDMonoField *> &GDMonoClass::get_all_fields() {
 	while ((raw_field = mono_class_get_fields(mono_class, &iter)) != NULL) {
 		StringName name = String::utf8(mono_field_get_name(raw_field));
 
-		Map<StringName, GDMonoField *>::Element *match = fields.find(name);
+		RBMap<StringName, GDMonoField *>::Element *match = fields.find(name);
 
 		if (match) {
 			fields_list.push_back(match->get());
@@ -392,7 +392,7 @@ const Vector<GDMonoField *> &GDMonoClass::get_all_fields() {
 }
 
 GDMonoProperty *GDMonoClass::get_property(const StringName &p_name) {
-	Map<StringName, GDMonoProperty *>::Element *result = properties.find(p_name);
+	RBMap<StringName, GDMonoProperty *>::Element *result = properties.find(p_name);
 
 	if (result)
 		return result->value();
@@ -421,7 +421,7 @@ const Vector<GDMonoProperty *> &GDMonoClass::get_all_properties() {
 	while ((raw_property = mono_class_get_properties(mono_class, &iter)) != NULL) {
 		StringName name = String::utf8(mono_property_get_name(raw_property));
 
-		Map<StringName, GDMonoProperty *>::Element *match = properties.find(name);
+		RBMap<StringName, GDMonoProperty *>::Element *match = properties.find(name);
 
 		if (match) {
 			properties_list.push_back(match->get());
@@ -457,7 +457,7 @@ const Vector<GDMonoClass *> &GDMonoClass::get_all_delegates() {
 		if (mono_class_is_delegate(raw_class)) {
 			StringName name = String::utf8(mono_class_get_name(raw_class));
 
-			Map<StringName, GDMonoClass *>::Element *match = delegates.find(name);
+			RBMap<StringName, GDMonoClass *>::Element *match = delegates.find(name);
 
 			if (match) {
 				delegates_list.push_back(match->get());
@@ -509,11 +509,11 @@ GDMonoClass::~GDMonoClass() {
 		mono_custom_attrs_free(attributes);
 	}
 
-	for (Map<StringName, GDMonoField *>::Element *E = fields.front(); E; E = E->next()) {
+	for (RBMap<StringName, GDMonoField *>::Element *E = fields.front(); E; E = E->next()) {
 		memdelete(E->value());
 	}
 
-	for (Map<StringName, GDMonoProperty *>::Element *E = properties.front(); E; E = E->next()) {
+	for (RBMap<StringName, GDMonoProperty *>::Element *E = properties.front(); E; E = E->next()) {
 		memdelete(E->value());
 	}
 

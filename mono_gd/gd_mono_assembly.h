@@ -34,9 +34,9 @@
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 
-#include "core/hash_map.h"
-#include "core/map.h"
-#include "core/ustring.h"
+#include "core/containers/hash_map.h"
+#include "core/containers/rb_map.h"
+#include "core/string/ustring.h"
 #include "gd_mono_utils.h"
 
 class GDMonoAssembly {
@@ -76,10 +76,10 @@ class GDMonoAssembly {
 #endif
 
 	bool gdobject_class_cache_updated;
-	Map<StringName, GDMonoClass *> gdobject_class_cache;
+	RBMap<StringName, GDMonoClass *> gdobject_class_cache;
 
 	HashMap<ClassKey, GDMonoClass *, ClassKey::Hasher> cached_classes;
-	Map<MonoClass *, GDMonoClass *> cached_raw;
+	RBMap<MonoClass *, GDMonoClass *> cached_raw;
 
 	static Vector<String> search_dirs;
 

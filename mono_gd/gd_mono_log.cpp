@@ -34,6 +34,7 @@
 
 #include "core/os/dir_access.h"
 #include "core/os/os.h"
+#include "core/string/ustring.h"
 
 #include "../godotsharp_dirs.h"
 #include "../utils/string_utils.h"
@@ -120,18 +121,25 @@ void GDMonoLog::_delete_old_log_files(const String &p_logs_dir) {
 
 	ERR_FAIL_COND(da->list_dir_begin() != OK);
 
-	String current;
-	while ((current = da->get_next()).length()) {
-		if (da->current_is_dir())
+	String current = da->get_next();
+	while (current.length()) {
+		if (da->current_is_dir()) {
+			current = da->get_next();
 			continue;
-		if (!current.ends_with(".txt"))
+		}
+
+		if (!current.ends_with(".txt")) {
+			current = da->get_next();
 			continue;
+		}
 
 		uint64_t modified_time = FileAccess::get_modified_time(da->get_current_dir().plus_file(current));
 
 		if (OS::get_singleton()->get_unix_time() - modified_time > MAX_SECS) {
 			da->remove(current);
 		}
+
+		current = da->get_next();
 	}
 
 	da->list_dir_end();

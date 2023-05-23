@@ -32,7 +32,7 @@
 
 #ifdef MONO_GLUE_ENABLED
 
-#include "core/reference.h"
+#include "core/object/reference.h"
 #include "core/string_name.h"
 
 #include "../csharp_script.h"
@@ -68,7 +68,7 @@ void godot_icall_Object_Disposed(MonoObject *p_obj, Object *p_ptr) {
 	void *data = p_ptr->get_script_instance_binding(CSharpLanguage::get_singleton()->get_language_index());
 
 	if (data) {
-		CSharpScriptBinding &script_binding = ((Map<Object *, CSharpScriptBinding>::Element *)data)->get();
+		CSharpScriptBinding &script_binding = ((RBMap<Object *, CSharpScriptBinding>::Element *)data)->get();
 		if (script_binding.inited) {
 			Ref<MonoGCHandle> &gchandle = script_binding.gchandle;
 			if (gchandle.is_valid()) {
@@ -115,7 +115,7 @@ void godot_icall_Reference_Disposed(MonoObject *p_obj, Object *p_ptr, MonoBoolea
 		void *data = ref->get_script_instance_binding(CSharpLanguage::get_singleton()->get_language_index());
 
 		if (data) {
-			CSharpScriptBinding &script_binding = ((Map<Object *, CSharpScriptBinding>::Element *)data)->get();
+			CSharpScriptBinding &script_binding = ((RBMap<Object *, CSharpScriptBinding>::Element *)data)->get();
 			if (script_binding.inited) {
 				Ref<MonoGCHandle> &gchandle = script_binding.gchandle;
 				if (gchandle.is_valid()) {

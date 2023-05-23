@@ -34,7 +34,7 @@
 
 #include "core/io/json.h"
 #include "core/os/file_access.h"
-#include "core/project_settings.h"
+#include "core/config/project_settings.h"
 #include "core/version.h"
 
 void class_db_api_to_json(const String &p_output_file, ClassDB::APIType p_api) {

@@ -35,8 +35,8 @@
 #include "core/array.h"
 #include "core/io/marshalls.h"
 #include "core/os/os.h"
-#include "core/ustring.h"
-#include "core/variant.h"
+#include "core/string/ustring.h"
+#include "core/variant/variant.h"
 #include "core/variant_parser.h"
 
 #include "../mono_gd/gd_mono_cache.h"

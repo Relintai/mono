@@ -33,8 +33,10 @@
 
 #include "core/io/resource_loader.h"
 #include "core/io/resource_saver.h"
-#include "core/script_language.h"
-#include "core/self_list.h"
+#include "core/object/script_language.h"
+#include "core/containers/self_list.h"
+#include "core/containers/rb_set.h"
+#include "core/containers/ordered_hash_map.h"
 
 #include "mono_gc_handle.h"
 #include "mono_gd/gd_mono.h"
@@ -84,7 +86,7 @@ class CSharpScript : public Script {
 
 	Ref<CSharpScript> base_cache; // TODO what's this for?
 
-	Set<Object *> instances;
+	RBSet<Object *> instances;
 
 #ifdef GD_MONO_HOT_RELOAD
 	struct StateBackup {
@@ -94,8 +96,8 @@ class CSharpScript : public Script {
 		List<Pair<StringName, Variant>> properties;
 	};
 
-	Set<ObjectID> pending_reload_instances;
-	Map<ObjectID, StateBackup> pending_reload_state;
+	RBSet<ObjectID> pending_reload_instances;
+	RBMap<ObjectID, StateBackup> pending_reload_state;
 	StringName tied_class_name_for_reload;
 	StringName tied_class_namespace_for_reload;
 #endif
@@ -110,23 +112,23 @@ class CSharpScript : public Script {
 		Variant::Type type;
 	};
 
-	Map<StringName, Vector<Argument>> _signals;
+	RBMap<StringName, Vector<Argument>> _signals;
 	bool signals_invalidated;
 
 #ifdef TOOLS_ENABLED
 	List<PropertyInfo> exported_members_cache; // members_cache
-	Map<StringName, Variant> exported_members_defval_cache; // member_default_values_cache
-	Set<PlaceHolderScriptInstance *> placeholders;
+	RBMap<StringName, Variant> exported_members_defval_cache; // member_default_values_cache
+	RBSet<PlaceHolderScriptInstance *> placeholders;
 	bool source_changed_cache;
 	bool placeholder_fallback_enabled;
 	bool exports_invalidated;
-	void _update_exports_values(Map<StringName, Variant> &values, List<PropertyInfo> &propnames);
+	void _update_exports_values(RBMap<StringName, Variant> &values, List<PropertyInfo> &propnames);
 	void _update_member_info_no_exports();
 	virtual void _placeholder_erased(PlaceHolderScriptInstance *p_placeholder);
 #endif
 
 #if defined(TOOLS_ENABLED) || defined(DEBUG_ENABLED)
-	Set<StringName> exported_members_names;
+	RBSet<StringName> exported_members_names;
 #endif
 
 	OrderedHashMap<StringName, PropertyInfo> member_info;
@@ -180,7 +182,7 @@ public:
 	virtual void get_script_property_list(List<PropertyInfo> *p_list) const;
 	virtual void update_exports();
 
-	virtual void get_members(Set<StringName> *p_members);
+	virtual void get_members(RBSet<StringName> *p_members);
 
 	virtual bool is_tool() const { return tool; }
 	virtual bool is_valid() const { return valid; }
@@ -312,11 +314,11 @@ class CSharpLanguage : public ScriptLanguage {
 	Mutex script_gchandle_release_mutex;
 	Mutex language_bind_mutex;
 
-	Map<Object *, CSharpScriptBinding> script_bindings;
+	RBMap<Object *, CSharpScriptBinding> script_bindings;
 
 #ifdef DEBUG_ENABLED
 	// List of unsafe object references
-	Map<ObjectID, int> unsafe_object_references;
+	RBMap<ObjectID, int> unsafe_object_references;
 	Mutex unsafe_object_references_lock;
 #endif
 
@@ -409,7 +411,7 @@ public:
 	virtual Ref<Script> get_template(const String &p_class_name, const String &p_base_class_name) const;
 	virtual bool is_using_templates();
 	virtual void make_template(const String &p_class_name, const String &p_base_class_name, Ref<Script> &p_script);
-	/* TODO */ virtual bool validate(const String &p_script, int &r_line_error, int &r_col_error, String &r_test_error, const String &p_path, List<String> *r_functions, List<ScriptLanguage::Warning> *r_warnings = NULL, Set<int> *r_safe_lines = NULL) const { return true; }
+	/* TODO */ virtual bool validate(const String &p_script, int &r_line_error, int &r_col_error, String &r_test_error, const String &p_path, List<String> *r_functions, List<ScriptLanguage::Warning> *r_warnings = NULL, RBSet<int> *r_safe_lines = NULL) const { return true; }
 	virtual String validate_path(const String &p_path) const;
 	virtual Script *create_script() const;
 	virtual bool has_named_classes() const;
@@ -464,7 +466,7 @@ public:
 	virtual void refcount_incremented_instance_binding(Object *p_object);
 	virtual bool refcount_decremented_instance_binding(Object *p_object);
 
-	Map<Object *, CSharpScriptBinding>::Element *insert_script_binding(Object *p_object, const CSharpScriptBinding &p_script_binding);
+	RBMap<Object *, CSharpScriptBinding>::Element *insert_script_binding(Object *p_object, const CSharpScriptBinding &p_script_binding);
 	bool setup_csharp_script_binding(CSharpScriptBinding &r_script_binding, Object *p_object);
 
 #ifdef DEBUG_ENABLED

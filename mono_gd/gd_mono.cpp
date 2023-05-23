@@ -41,7 +41,7 @@
 #include "core/os/file_access.h"
 #include "core/os/os.h"
 #include "core/os/thread.h"
-#include "core/project_settings.h"
+#include "core/config/project_settings.h"
 
 #include "../csharp_script.h"
 #include "../godotsharp_dirs.h"

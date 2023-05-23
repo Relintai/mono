@@ -35,8 +35,8 @@
 
 #include "core/os/dir_access.h"
 #include "core/os/os.h"
-#include "core/project_settings.h"
-#include "core/reference.h"
+#include "core/config/project_settings.h"
+#include "core/object/reference.h"
 
 #ifdef TOOLS_ENABLED
 #include "editor/script_editor_debugger.h"
@@ -70,7 +70,7 @@ MonoObject *unmanaged_get_managed(Object *unmanaged) {
 
 	ERR_FAIL_NULL_V(data, NULL);
 
-	CSharpScriptBinding &script_binding = ((Map<Object *, CSharpScriptBinding>::Element *)data)->value();
+	CSharpScriptBinding &script_binding = ((RBMap<Object *, CSharpScriptBinding>::Element *)data)->value();
 
 	if (!script_binding.inited) {
 		MutexLock lock(CSharpLanguage::get_singleton()->get_language_bind_mutex());

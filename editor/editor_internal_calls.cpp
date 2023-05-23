@@ -38,9 +38,12 @@
 #include "core/version.h"
 #include "editor/editor_node.h"
 #include "editor/editor_scale.h"
-#include "editor/plugins/script_editor_plugin.h"
+#include "editor/editor_settings.h"
 #include "editor/script_editor_debugger.h"
+#include "editor_code_editor/script_editor_plugin.h"
+#include "editor_code_editor/editor_script_editor.h"
 #include "main/main.h"
+#include "core/config/project_settings.h"
 
 #include "../csharp_script.h"
 #include "../glue/cs_glue_version.gen.h"
@@ -285,16 +288,16 @@ void godot_icall_Internal_ReloadAssemblies(MonoBoolean p_soft_reload) {
 }
 
 void godot_icall_Internal_ScriptEditorDebuggerReloadScripts() {
-	ScriptEditor::get_singleton()->get_debugger()->reload_scripts();
+	EditorScriptEditor::get_singleton()->get_debugger()->reload_scripts();
 }
 
 MonoBoolean godot_icall_Internal_ScriptEditorEdit(MonoObject *p_resource, int32_t p_line, int32_t p_col, MonoBoolean p_grab_focus) {
 	Ref<Resource> resource = GDMonoMarshal::mono_object_to_variant(p_resource);
-	return (MonoBoolean)ScriptEditor::get_singleton()->edit(resource, p_line, p_col, (bool)p_grab_focus);
+	return (MonoBoolean)EditorScriptEditor::get_singleton()->edit(resource, p_line, p_col, (bool)p_grab_focus);
 }
 
 void godot_icall_Internal_EditorNodeShowScriptScreen() {
-	EditorNode::get_singleton()->call("_editor_select", EditorNode::EDITOR_SCRIPT);
+	EditorNode::get_singleton()->call("_editor_select", 2);
 }
 
 MonoObject *godot_icall_Internal_GetScriptsMetadataOrNothing(MonoReflectionType *p_dict_reftype) {
@@ -327,7 +330,7 @@ void godot_icall_Internal_EditorRunStop() {
 }
 
 void godot_icall_Internal_ScriptEditorDebugger_ReloadScripts() {
-	ScriptEditorDebugger *sed = ScriptEditor::get_singleton()->get_debugger();
+	EditorScriptEditorDebugger *sed = EditorScriptEditor::get_singleton()->get_debugger();
 	if (sed) {
 		sed->reload_scripts();
 	}

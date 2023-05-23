@@ -127,15 +127,15 @@ namespace Godot
             /* not sure if very "efficient" but good enough? */
 
             Vector3 sourceScale = basis.Scale;
-            Quat sourceRotation = basis.RotationQuat();
+            Quaternion sourceRotation = basis.RotationQuaternion();
             Vector3 sourceLocation = origin;
 
             Vector3 destinationScale = transform.basis.Scale;
-            Quat destinationRotation = transform.basis.RotationQuat();
+            Quaternion destinationRotation = transform.basis.RotationQuaternion();
             Vector3 destinationLocation = transform.origin;
 
             var interpolated = new Transform();
-            interpolated.basis.SetQuatScale(sourceRotation.Slerp(destinationRotation, weight).Normalized(), sourceScale.LinearInterpolate(destinationScale, weight));
+            interpolated.basis.SetQuaternionScale(sourceRotation.Slerp(destinationRotation, weight).Normalized(), sourceScale.LinearInterpolate(destinationScale, weight));
             interpolated.origin = sourceLocation.LinearInterpolate(destinationLocation, weight);
 
             return interpolated;
@@ -330,9 +330,9 @@ namespace Godot
         /// Constructs a transformation matrix from the given <paramref name="quaternion"/>
         /// and <paramref name="origin"/> vector.
         /// </summary>
-        /// <param name="quaternion">The <see cref="Quat"/> to create the basis from.</param>
+        /// <param name="quaternion">The <see cref="Quaternion"/> to create the basis from.</param>
         /// <param name="origin">The origin vector, or column index 3.</param>
-        public Transform(Quat quaternion, Vector3 origin)
+        public Transform(Quaternion quaternion, Vector3 origin)
         {
             basis = new Basis(quaternion);
             this.origin = origin;
