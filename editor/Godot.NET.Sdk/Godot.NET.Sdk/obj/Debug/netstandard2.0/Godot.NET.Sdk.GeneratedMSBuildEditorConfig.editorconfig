@@ -1,0 +1,3 @@
+is_global = true
+build_property.RootNamespace = Godot.NET.Sdk
+build_property.ProjectDir = /home/relintai/Projects/godot/modules/mono/editor/Godot.NET.Sdk/Godot.NET.Sdk/
