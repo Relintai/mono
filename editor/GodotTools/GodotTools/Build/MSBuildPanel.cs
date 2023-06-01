@@ -116,7 +116,7 @@ namespace GodotTools.Build
             var toolBarHBox = new HBoxContainer { SizeFlagsHorizontal = (int)SizeFlags.ExpandFill };
             AddChild(toolBarHBox);
 
-            _buildMenuBtn = new MenuButton { Text = "Build", Icon = GetIcon("Play", "EditorIcons") };
+            _buildMenuBtn = new MenuButton { Text = "Build", Icon = GetThemeIcon("Play", "EditorIcons") };
             toolBarHBox.AddChild(_buildMenuBtn);
 
             var buildMenu = _buildMenuBtn.GetPopup();
@@ -128,7 +128,7 @@ namespace GodotTools.Build
             _errorsBtn = new Button
             {
                 HintTooltip = "Show Errors".TTR(),
-                Icon = GetIcon("StatusError", "EditorIcons"),
+                Icon = GetThemeIcon("StatusError", "EditorIcons"),
                 ExpandIcon = false,
                 ToggleMode = true,
                 Pressed = true,
@@ -140,7 +140,7 @@ namespace GodotTools.Build
             _warningsBtn = new Button
             {
                 HintTooltip = "Show Warnings".TTR(),
-                Icon = GetIcon("NodeWarning", "EditorIcons"),
+                Icon = GetThemeIcon("NodeWarning", "EditorIcons"),
                 ExpandIcon = false,
                 ToggleMode = true,
                 Pressed = true,
@@ -170,11 +170,11 @@ namespace GodotTools.Build
             if (what == NotificationThemeChanged)
             {
                 if (_buildMenuBtn != null)
-                    _buildMenuBtn.Icon = GetIcon("Play", "EditorIcons");
+                    _buildMenuBtn.Icon = GetThemeIcon("Play", "EditorIcons");
                 if (_errorsBtn != null)
-                    _errorsBtn.Icon = GetIcon("StatusError", "EditorIcons");
+                    _errorsBtn.Icon = GetThemeIcon("StatusError", "EditorIcons");
                 if (_warningsBtn != null)
-                    _warningsBtn.Icon = GetIcon("NodeWarning", "EditorIcons");
+                    _warningsBtn.Icon = GetThemeIcon("NodeWarning", "EditorIcons");
             }
         }
     }

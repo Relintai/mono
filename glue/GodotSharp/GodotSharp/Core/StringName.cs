@@ -62,7 +62,7 @@ namespace Godot
         }
 
         public StringName() {
-            ptr = godot_icall_StringName_Ctor(path);
+            ptr = godot_icall_StringName_Ctor();
         }
 
         public StringName(string path)
@@ -91,7 +91,7 @@ namespace Godot
 
         public static bool operator ==(StringName left, StringName right)
         {
-            return godot_icall_StringName_operator_String(StringName.GetPtr(left), StringName.GetPtr(right));
+            return godot_icall_StringName_operator_Equals(StringName.GetPtr(left), StringName.GetPtr(right));
         }
 
         public static bool operator !=(StringName left, StringName right)
@@ -111,7 +111,7 @@ namespace Godot
 
         public bool Equals(StringName other)
         {
-             return godot_icall_StringName_operator_String(StringName.GetPtr(left), StringName.GetPtr(right));
+            return godot_icall_StringName_operator_Equals(StringName.GetPtr(this), StringName.GetPtr(other));
         }
 
         public override int GetHashCode()

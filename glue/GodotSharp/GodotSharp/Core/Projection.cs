@@ -41,10 +41,10 @@ namespace Godot
         public static Projection Identity { get { return _identity; } }
 
         public void set_identity() {
-            Row0[0] = 1;
-            Row1[1] = 1;
-            Row2[2] = 1;
-            Row3[3] = 1;
+            Row0.x = 1;
+            Row1.y = 1;
+            Row2.z = 1;
+            Row3.w = 1;
         }
 
         public Projection(Vector4 Row0, Vector4 Row1, Vector4 Row2, Vector4 Row3) {

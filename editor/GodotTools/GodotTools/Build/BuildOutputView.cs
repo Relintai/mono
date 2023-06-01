@@ -41,13 +41,13 @@ namespace GodotTools.Build
             get
             {
                 if (!HasBuildExited)
-                    return GetIcon("Stop", "EditorIcons");
+                    return GetThemeIcon("Stop", "EditorIcons");
 
                 if (BuildResult == Build.BuildResult.Error)
-                    return GetIcon("Error", "EditorIcons");
+                    return GetThemeIcon("Error", "EditorIcons");
 
                 if (WarningCount > 1)
-                    return GetIcon("Warning", "EditorIcons");
+                    return GetThemeIcon("Warning", "EditorIcons");
 
                 return null;
             }
@@ -156,8 +156,8 @@ namespace GodotTools.Build
         {
             _issuesList.Clear();
 
-            using (var warningIcon = GetIcon("Warning", "EditorIcons"))
-            using (var errorIcon = GetIcon("Error", "EditorIcons"))
+            using (var warningIcon = GetThemeIcon("Warning", "EditorIcons"))
+            using (var errorIcon = GetThemeIcon("Error", "EditorIcons"))
             {
                 for (int i = 0; i < _issues.Count; i++)
                 {
@@ -345,7 +345,7 @@ namespace GodotTools.Build
             if (_issuesList.IsAnythingSelected())
             {
                 // Add menu entries for the selected item
-                _issuesListContextMenu.AddIconItem(GetIcon("ActionCopy", "EditorIcons"),
+                _issuesListContextMenu.AddIconItem(GetThemeIcon("ActionCopy", "EditorIcons"),
                     label: "Copy Error".TTR(), (int)IssuesContextMenuOption.Copy);
             }
 

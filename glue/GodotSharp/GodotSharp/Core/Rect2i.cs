@@ -57,7 +57,7 @@ namespace Godot
         /// <param name="position">The position.</param>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
-        public Rect2i(Vector2i position, real_t width, real_t height)
+        public Rect2i(Vector2i position, int width, int height)
         {
             _position = position;
             _size = new Vector2i(width, height);
@@ -69,7 +69,7 @@ namespace Godot
         /// <param name="x">The position's X coordinate.</param>
         /// <param name="y">The position's Y coordinate.</param>
         /// <param name="size">The size.</param>
-        public Rect2i(real_t x, real_t y, Vector2i size)
+        public Rect2i(int x, int y, Vector2i size)
         {
             _position = new Vector2i(x, y);
             _size = size;
@@ -82,7 +82,7 @@ namespace Godot
         /// <param name="y">The position's Y coordinate.</param>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
-        public Rect2i(real_t x, real_t y, real_t width, real_t height)
+        public Rect2i(int x, int y, int width, int height)
         {
             _position = new Vector2i(x, y);
             _size = new Vector2i(width, height);
