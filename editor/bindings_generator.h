@@ -524,6 +524,7 @@ class BindingsGenerator {
 		StringName type_RID;
 		StringName type_String;
 		StringName type_NodePath;
+		StringName type_StringName;
 		StringName type_at_GlobalScope;
 		StringName enum_Error;
 
@@ -538,6 +539,8 @@ class BindingsGenerator {
 		StringName type_float;
 		StringName type_double;
 
+		StringName type_Node;
+
 		NameCache() {
 			type_void = StaticCString::create("void");
 			type_Array = StaticCString::create("Array");
@@ -549,6 +552,7 @@ class BindingsGenerator {
 			type_RID = StaticCString::create("RID");
 			type_String = StaticCString::create("String");
 			type_NodePath = StaticCString::create("NodePath");
+			type_StringName = StaticCString::create("StringName");
 			type_at_GlobalScope = StaticCString::create("@GlobalScope");
 			enum_Error = StaticCString::create("Error");
 
@@ -562,6 +566,8 @@ class BindingsGenerator {
 			type_ulong = StaticCString::create("ulong");
 			type_float = StaticCString::create("float");
 			type_double = StaticCString::create("double");
+
+			type_Node = StaticCString::create("Node");
 		}
 
 	private:

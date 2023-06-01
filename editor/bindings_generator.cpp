@@ -1468,7 +1468,9 @@ Error BindingsGenerator::_generate_cs_property(const BindingsGenerator::TypeInte
 	}
 
 	if (getter && setter) {
-		ERR_FAIL_COND_V(getter->return_type.cname != setter->arguments.back()->get().type.cname, ERR_BUG);
+		if (getter->return_type.cname != setter->arguments.back()->get().type.cname) {
+			ERR_PRINT("Class has a type mismatch between getter and setter. (This is expected sometimes, usually where the Setter's type is Node, and the getter returns a Node derived class.) Getter: " + getter->name + " Getter type:" + getter->return_type.cname + " Setter type:" + setter->arguments.back()->get().type.cname);
+		}
 	}
 
 	const TypeReference &proptype_name = getter ? getter->return_type : setter->arguments.back()->get().type;
@@ -2628,7 +2630,11 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 			break;
 		case Variant::STRING:
 		case Variant::NODE_PATH:
+		case Variant::STRING_NAME:
 			if (r_iarg.type.cname == name_cache.type_NodePath) {
+				r_iarg.default_argument = "(%s)\"" + r_iarg.default_argument + "\"";
+				r_iarg.def_param_mode = ArgumentInterface::NULLABLE_REF;
+			} else if (r_iarg.type.cname == name_cache.type_StringName) {
 				r_iarg.default_argument = "(%s)\"" + r_iarg.default_argument + "\"";
 				r_iarg.def_param_mode = ArgumentInterface::NULLABLE_REF;
 			} else {
@@ -2651,6 +2657,11 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 			r_iarg.default_argument = "new Rect2(new Vector2(" + rect.position.operator String() + "), new Vector2(" + rect.size.operator String() + "))";
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
+		case Variant::RECT2I: {
+			Rect2i rect = p_val.operator Rect2i();
+			r_iarg.default_argument = "new Rect2I(new Vector2I(" + rect.position.operator String() + "), new Vector2I(" + rect.size.operator String() + "))";
+			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
+		} break;
 		case Variant::COLOR: {
 			if (r_iarg.default_argument == "1,1,1,1") {
 				r_iarg.default_argument = "1, 1, 1, 1";
@@ -2659,7 +2670,11 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
 		case Variant::VECTOR2:
+		case Variant::VECTOR2I:
 		case Variant::VECTOR3:
+		case Variant::VECTOR3I:
+		case Variant::VECTOR4:
+		case Variant::VECTOR4I:
 			r_iarg.default_argument = "new %s" + r_iarg.default_argument;
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 			break;
@@ -2691,7 +2706,11 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 		case Variant::POOL_REAL_ARRAY:
 		case Variant::POOL_STRING_ARRAY:
 		case Variant::POOL_VECTOR2_ARRAY:
+		case Variant::POOL_VECTOR2I_ARRAY:
 		case Variant::POOL_VECTOR3_ARRAY:
+		case Variant::POOL_VECTOR3I_ARRAY:
+		case Variant::POOL_VECTOR4_ARRAY:
+		case Variant::POOL_VECTOR4I_ARRAY:
 		case Variant::POOL_COLOR_ARRAY:
 			r_iarg.default_argument = "Array.Empty<%s>()";
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_REF;
@@ -2721,6 +2740,15 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 				r_iarg.default_argument = "Basis.Identity";
 			} else {
 				r_iarg.default_argument = "new Basis(new Vector3" + basis.get_column(0).operator String() + ", new Vector3" + basis.get_column(1).operator String() + ", new Vector3" + basis.get_column(2).operator String() + ")";
+			}
+			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
+		} break;
+		case Variant::PROJECTION: {
+			Projection projection = p_val.operator Projection();
+			if (projection == Projection()) {
+				r_iarg.default_argument = "Projection.Identity";
+			} else {
+				r_iarg.default_argument = "new Projection(new Vector4" + projection.matrix[0].operator String() + ", new Vector4" + projection.matrix[1].operator String() + ", new Vector4" + projection.matrix[2].operator String() + ", new Vector4" + projection.matrix[3].operator String() + ")";
 			}
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
@@ -2766,15 +2794,20 @@ void BindingsGenerator::_populate_builtin_type_interfaces() {
 	}
 
 	INSERT_STRUCT_TYPE(Vector2)
+	INSERT_STRUCT_TYPE(Vector2i)
 	INSERT_STRUCT_TYPE(Rect2)
 	INSERT_STRUCT_TYPE(Transform2D)
 	INSERT_STRUCT_TYPE(Vector3)
+	INSERT_STRUCT_TYPE(Vector3i)
+	INSERT_STRUCT_TYPE(Vector4)
+	INSERT_STRUCT_TYPE(Vector4i)
 	INSERT_STRUCT_TYPE(Basis)
 	INSERT_STRUCT_TYPE(Quaternion)
 	INSERT_STRUCT_TYPE(Transform)
 	INSERT_STRUCT_TYPE(AABB)
 	INSERT_STRUCT_TYPE(Color)
 	INSERT_STRUCT_TYPE(Plane)
+	INSERT_STRUCT_TYPE(Projection)
 
 #undef INSERT_STRUCT_TYPE
 
@@ -2895,6 +2928,22 @@ void BindingsGenerator::_populate_builtin_type_interfaces() {
 	itype.im_type_out = "IntPtr";
 	builtin_types.insert(itype.cname, itype);
 
+	// StringName
+	itype = TypeInterface();
+	itype.name = "StringName";
+	itype.cname = itype.name;
+	itype.proxy_name = "StringName";
+	itype.c_out = "\treturn memnew(StringName(%1));\n";
+	itype.c_type = itype.name;
+	itype.c_type_in = itype.c_type + "*";
+	itype.c_type_out = itype.c_type + "*";
+	itype.cs_type = itype.proxy_name;
+	itype.cs_in = "StringName." CS_SMETHOD_GETINSTANCE "(%0)";
+	itype.cs_out = "return new %2(%0(%1));";
+	itype.im_type_in = "IntPtr";
+	itype.im_type_out = "IntPtr";
+	builtin_types.insert(itype.cname, itype);
+
 	// RID
 	itype = TypeInterface();
 	itype.name = "RID";
@@ -2973,7 +3022,11 @@ void BindingsGenerator::_populate_builtin_type_interfaces() {
 
 	INSERT_ARRAY(PoolColorArray, Color);
 	INSERT_ARRAY(PoolVector2Array, Vector2);
+	INSERT_ARRAY(PoolVector2iArray, Vector2i);
 	INSERT_ARRAY(PoolVector3Array, Vector3);
+	INSERT_ARRAY(PoolVector3iArray, Vector3i);
+	INSERT_ARRAY(PoolVector4Array, Vector4);
+	INSERT_ARRAY(PoolVector4iArray, Vector4i);
 
 #undef INSERT_ARRAY
 

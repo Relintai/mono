@@ -36,6 +36,28 @@ namespace Godot
 
         public Vector4 Row3;
 
+        private static readonly Projection _identity = new Projection();
+
+        public static Projection Identity { get { return _identity; } }
+
+        public void set_identity() {
+            Row0[0] = 1;
+            Row1[1] = 1;
+            Row2[2] = 1;
+            Row3[3] = 1;
+        }
+
+        public Projection() {
+            set_identity();
+        }
+
+        public Projection(Vector4 Row0, Vector4 Row1, Vector4 Row2, Vector4 Row3) {
+            this.Row0 = Row0;
+            this.Row1 = Row1;
+            this.Row2 = Row2;
+            this.Row3 = Row3;
+        }
+
 
         /// <summary>
         /// Returns <see langword="true"/> if the <see cref="Projection"/> is
