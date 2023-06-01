@@ -119,8 +119,9 @@ static String snake_to_pascal_case(const String &p_identifier, bool p_input_is_u
 		if (part.length()) {
 			part[0] = _find_upper(part[0]);
 			if (p_input_is_upper) {
-				for (int j = 1; j < part.length(); j++)
+				for (int j = 1; j < part.length(); j++) {
 					part[j] = _find_lower(part[j]);
+				}
 			}
 			ret += part;
 		} else {
@@ -153,8 +154,9 @@ static String snake_to_camel_case(const String &p_identifier, bool p_input_is_up
 				part[0] = _find_upper(part[0]);
 			}
 			if (p_input_is_upper) {
-				for (int j = i != 0 ? 1 : 0; j < part.length(); j++)
+				for (int j = i != 0 ? 1 : 0; j < part.length(); j++) {
 					part[j] = _find_lower(part[j]);
+				}
 			}
 			ret += part;
 		} else {
@@ -178,8 +180,9 @@ static String snake_to_camel_case(const String &p_identifier, bool p_input_is_up
 String BindingsGenerator::bbcode_to_xml(const String &p_bbcode, const TypeInterface *p_itype) {
 	// Based on the version in EditorHelp
 
-	if (p_bbcode.empty())
+	if (p_bbcode.empty()) {
 		return String();
+	}
 
 	DocData *doc = EditorHelp::get_doc_data();
 
@@ -196,8 +199,9 @@ String BindingsGenerator::bbcode_to_xml(const String &p_bbcode, const TypeInterf
 	while (pos < bbcode.length()) {
 		int brk_pos = bbcode.find("[", pos);
 
-		if (brk_pos < 0)
+		if (brk_pos < 0) {
 			brk_pos = bbcode.length();
+		}
 
 		if (brk_pos > pos) {
 			String text = bbcode.substr(pos, brk_pos - pos);
@@ -206,19 +210,22 @@ String BindingsGenerator::bbcode_to_xml(const String &p_bbcode, const TypeInterf
 			} else {
 				Vector<String> lines = text.split("\n");
 				for (int i = 0; i < lines.size(); i++) {
-					if (i != 0)
+					if (i != 0) {
 						xml_output.append("<para>");
+					}
 
 					xml_output.append(lines[i].xml_escape());
 
-					if (i != lines.size() - 1)
+					if (i != lines.size() - 1) {
 						xml_output.append("</para>\n");
+					}
 				}
 			}
 		}
 
-		if (brk_pos == bbcode.length())
+		if (brk_pos == bbcode.length()) {
 			break; // nothing else to add
+		}
 
 		int brk_end = bbcode.find("]", brk_pos + 1);
 
@@ -229,13 +236,15 @@ String BindingsGenerator::bbcode_to_xml(const String &p_bbcode, const TypeInterf
 			} else {
 				Vector<String> lines = text.split("\n");
 				for (int i = 0; i < lines.size(); i++) {
-					if (i != 0)
+					if (i != 0) {
 						xml_output.append("<para>");
+					}
 
 					xml_output.append(lines[i].xml_escape());
 
-					if (i != lines.size() - 1)
+					if (i != lines.size() - 1) {
 						xml_output.append("</para>\n");
+					}
 				}
 			}
 
@@ -355,8 +364,16 @@ String BindingsGenerator::bbcode_to_xml(const String &p_bbcode, const TypeInterf
 				xml_output.append("<see cref=\"string\"/>");
 			} else if (tag == "PoolVector2Array") {
 				xml_output.append("<see cref=\"" BINDINGS_NAMESPACE ".Vector2\"/>");
+			} else if (tag == "PoolVector2iArray") {
+				xml_output.append("<see cref=\"" BINDINGS_NAMESPACE ".Vector2i\"/>");
 			} else if (tag == "PoolVector3Array") {
 				xml_output.append("<see cref=\"" BINDINGS_NAMESPACE ".Vector3\"/>");
+			} else if (tag == "PoolVector3iArray") {
+				xml_output.append("<see cref=\"" BINDINGS_NAMESPACE ".Vector3i\"/>");
+			} else if (tag == "PoolVector4Array") {
+				xml_output.append("<see cref=\"" BINDINGS_NAMESPACE ".Vector4\"/>");
+			} else if (tag == "PoolVector4iArray") {
+				xml_output.append("<see cref=\"" BINDINGS_NAMESPACE ".Vector4i\"/>");
 			} else if (tag == "PoolColorArray") {
 				xml_output.append("<see cref=\"" BINDINGS_NAMESPACE ".Color\"/>");
 			} else {
@@ -421,8 +438,9 @@ String BindingsGenerator::bbcode_to_xml(const String &p_bbcode, const TypeInterf
 			tag_stack.push_front(tag);
 		} else if (tag == "url") {
 			int end = bbcode.find("[", brk_end);
-			if (end == -1)
+			if (end == -1) {
 				end = bbcode.length();
+			}
 			String url = bbcode.substr(brk_end + 1, end - brk_end - 1);
 			xml_output.append("<a href=\"");
 			xml_output.append(url);
@@ -441,8 +459,9 @@ String BindingsGenerator::bbcode_to_xml(const String &p_bbcode, const TypeInterf
 			tag_stack.push_front("url");
 		} else if (tag == "img") {
 			int end = bbcode.find("[", brk_end);
-			if (end == -1)
+			if (end == -1) {
 				end = bbcode.length();
+			}
 			String image = bbcode.substr(brk_end + 1, end - brk_end - 1);
 
 			// Not supported. Just append the bbcode.
@@ -683,8 +702,9 @@ int BindingsGenerator::_determine_enum_prefix(const EnumInterface &p_ienum) {
 	Vector<String> front_parts = front_iconstant.name.split("_", /* p_allow_empty: */ true);
 	int candidate_len = front_parts.size() - 1;
 
-	if (candidate_len == 0)
+	if (candidate_len == 0) {
 		return 0;
+	}
 
 	for (const List<ConstantInterface>::Element *E = p_ienum.constants.front()->next(); E; E = E->next()) {
 		const ConstantInterface &iconstant = E->get();
@@ -696,14 +716,16 @@ int BindingsGenerator::_determine_enum_prefix(const EnumInterface &p_ienum) {
 			if (front_parts[i] != parts[i]) {
 				// HARDCODED: Some Flag enums have the prefix 'FLAG_' for everything except 'FLAGS_DEFAULT' (same for 'METHOD_FLAG_' and'METHOD_FLAGS_DEFAULT').
 				bool hardcoded_exc = (i == candidate_len - 1 && ((front_parts[i] == "FLAGS" && parts[i] == "FLAG") || (front_parts[i] == "FLAG" && parts[i] == "FLAGS")));
-				if (!hardcoded_exc)
+				if (!hardcoded_exc) {
 					break;
+				}
 			}
 		}
 		candidate_len = i;
 
-		if (candidate_len == 0)
+		if (candidate_len == 0) {
 			return 0;
+		}
 	}
 
 	return candidate_len;
@@ -720,22 +742,25 @@ void BindingsGenerator::_apply_prefix_to_enum_constants(BindingsGenerator::EnumI
 
 			Vector<String> parts = constant_name.split("_", /* p_allow_empty: */ true);
 
-			if (parts.size() <= curr_prefix_length)
+			if (parts.size() <= curr_prefix_length) {
 				continue;
+			}
 
 			if (parts[curr_prefix_length][0] >= '0' && parts[curr_prefix_length][0] <= '9') {
 				// The name of enum constants may begin with a numeric digit when strip from the enum prefix,
 				// so we make the prefix for this constant one word shorter in those cases.
 				for (curr_prefix_length = curr_prefix_length - 1; curr_prefix_length > 0; curr_prefix_length--) {
-					if (parts[curr_prefix_length][0] < '0' || parts[curr_prefix_length][0] > '9')
+					if (parts[curr_prefix_length][0] < '0' || parts[curr_prefix_length][0] > '9') {
 						break;
+					}
 				}
 			}
 
 			constant_name = "";
 			for (int i = curr_prefix_length; i < parts.size(); i++) {
-				if (i > curr_prefix_length)
+				if (i > curr_prefix_length) {
 					constant_name += "_";
+				}
 				constant_name += parts[i];
 			}
 
@@ -748,8 +773,9 @@ void BindingsGenerator::_generate_method_icalls(const TypeInterface &p_itype) {
 	for (const List<MethodInterface>::Element *E = p_itype.methods.front(); E; E = E->next()) {
 		const MethodInterface &imethod = E->get();
 
-		if (imethod.is_virtual)
+		if (imethod.is_virtual) {
 			continue;
+		}
 
 		const TypeInterface *return_type = _get_type_or_placeholder(imethod.return_type);
 
@@ -798,8 +824,9 @@ void BindingsGenerator::_generate_method_icalls(const TypeInterface &p_itype) {
 		List<InternalCall>::Element *match = method_icalls.find(im_icall);
 
 		if (match) {
-			if (p_itype.api_type != ClassDB::API_EDITOR)
+			if (p_itype.api_type != ClassDB::API_EDITOR) {
 				match->get().editor_only = false;
+			}
 			method_icalls_map.insert(&E->get(), &match->get());
 		} else {
 			List<InternalCall>::Element *added = method_icalls.push_back(im_icall);
@@ -844,8 +871,9 @@ void BindingsGenerator::_generate_global_constants(StringBuilder &p_output) {
 		p_output.append(";");
 	}
 
-	if (!global_constants.empty())
+	if (!global_constants.empty()) {
 		p_output.append("\n");
+	}
 
 	p_output.append(INDENT1 CLOSE_BLOCK); // end of GD class
 
@@ -907,8 +935,9 @@ void BindingsGenerator::_generate_global_constants(StringBuilder &p_output) {
 
 		p_output.append(INDENT1 CLOSE_BLOCK);
 
-		if (enum_in_static_class)
+		if (enum_in_static_class) {
 			p_output.append(INDENT1 CLOSE_BLOCK);
+		}
 	}
 
 	p_output.append(CLOSE_BLOCK); // end of namespace
@@ -942,8 +971,9 @@ Error BindingsGenerator::generate_cs_core_project(const String &p_proj_dir) {
 		_generate_global_constants(constants_source);
 		String output_file = path::join(base_gen_dir, BINDINGS_GLOBAL_SCOPE_CLASS "_constants.cs");
 		Error save_err = _save_file(output_file, constants_source);
-		if (save_err != OK)
+		if (save_err != OK) {
 			return save_err;
+		}
 
 		compile_items.push_back(output_file);
 	}
@@ -951,17 +981,20 @@ Error BindingsGenerator::generate_cs_core_project(const String &p_proj_dir) {
 	for (OrderedHashMap<StringName, TypeInterface>::Element E = obj_types.front(); E; E = E.next()) {
 		const TypeInterface &itype = E.get();
 
-		if (itype.api_type == ClassDB::API_EDITOR)
+		if (itype.api_type == ClassDB::API_EDITOR) {
 			continue;
+		}
 
 		String output_file = path::join(godot_objects_gen_dir, itype.proxy_name + ".cs");
 		Error err = _generate_cs_type(itype, output_file);
 
-		if (err == ERR_SKIP)
+		if (err == ERR_SKIP) {
 			continue;
+		}
 
-		if (err != OK)
+		if (err != OK) {
 			return err;
+		}
 
 		compile_items.push_back(output_file);
 	}
@@ -996,10 +1029,12 @@ Error BindingsGenerator::generate_cs_core_project(const String &p_proj_dir) {
 		cs_icalls_content.append(m_icall.im_sig + ");\n");                                       \
 	}
 
-	for (const List<InternalCall>::Element *E = core_custom_icalls.front(); E; E = E->next())
+	for (const List<InternalCall>::Element *E = core_custom_icalls.front(); E; E = E->next()) {
 		ADD_INTERNAL_CALL(E->get());
-	for (const List<InternalCall>::Element *E = method_icalls.front(); E; E = E->next())
+	}
+	for (const List<InternalCall>::Element *E = method_icalls.front(); E; E = E->next()) {
 		ADD_INTERNAL_CALL(E->get());
+	}
 
 #undef ADD_INTERNAL_CALL
 
@@ -1008,8 +1043,9 @@ Error BindingsGenerator::generate_cs_core_project(const String &p_proj_dir) {
 	String internal_methods_file = path::join(base_gen_dir, BINDINGS_CLASS_NATIVECALLS ".cs");
 
 	Error err = _save_file(internal_methods_file, cs_icalls_content);
-	if (err != OK)
+	if (err != OK) {
 		return err;
+	}
 
 	compile_items.push_back(internal_methods_file);
 
@@ -1028,8 +1064,9 @@ Error BindingsGenerator::generate_cs_core_project(const String &p_proj_dir) {
 	String includes_props_file = path::join(base_gen_dir, "GeneratedIncludes.props");
 
 	err = _save_file(includes_props_file, includes_props_content);
-	if (err != OK)
+	if (err != OK) {
 		return err;
+	}
 
 	return OK;
 }
@@ -1057,17 +1094,20 @@ Error BindingsGenerator::generate_cs_editor_project(const String &p_proj_dir) {
 	for (OrderedHashMap<StringName, TypeInterface>::Element E = obj_types.front(); E; E = E.next()) {
 		const TypeInterface &itype = E.get();
 
-		if (itype.api_type != ClassDB::API_EDITOR)
+		if (itype.api_type != ClassDB::API_EDITOR) {
 			continue;
+		}
 
 		String output_file = path::join(godot_objects_gen_dir, itype.proxy_name + ".cs");
 		Error err = _generate_cs_type(itype, output_file);
 
-		if (err == ERR_SKIP)
+		if (err == ERR_SKIP) {
 			continue;
+		}
 
-		if (err != OK)
+		if (err != OK) {
 			return err;
+		}
 
 		compile_items.push_back(output_file);
 	}
@@ -1100,10 +1140,12 @@ Error BindingsGenerator::generate_cs_editor_project(const String &p_proj_dir) {
 		cs_icalls_content.append(m_icall.im_sig + ");\n");                                       \
 	}
 
-	for (const List<InternalCall>::Element *E = editor_custom_icalls.front(); E; E = E->next())
+	for (const List<InternalCall>::Element *E = editor_custom_icalls.front(); E; E = E->next()) {
 		ADD_INTERNAL_CALL(E->get());
-	for (const List<InternalCall>::Element *E = method_icalls.front(); E; E = E->next())
+	}
+	for (const List<InternalCall>::Element *E = method_icalls.front(); E; E = E->next()) {
 		ADD_INTERNAL_CALL(E->get());
+	}
 
 #undef ADD_INTERNAL_CALL
 
@@ -1112,8 +1154,9 @@ Error BindingsGenerator::generate_cs_editor_project(const String &p_proj_dir) {
 	String internal_methods_file = path::join(base_gen_dir, BINDINGS_CLASS_NATIVECALLS_EDITOR ".cs");
 
 	Error err = _save_file(internal_methods_file, cs_icalls_content);
-	if (err != OK)
+	if (err != OK) {
 		return err;
+	}
 
 	compile_items.push_back(internal_methods_file);
 
@@ -1132,8 +1175,9 @@ Error BindingsGenerator::generate_cs_editor_project(const String &p_proj_dir) {
 	String includes_props_file = path::join(base_gen_dir, "GeneratedIncludes.props");
 
 	err = _save_file(includes_props_file, includes_props_content);
-	if (err != OK)
+	if (err != OK) {
 		return err;
+	}
 
 	return OK;
 }
@@ -1290,8 +1334,9 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 			output.append(";");
 		}
 
-		if (itype.constants.size())
+		if (itype.constants.size()) {
 			output.append("\n");
+		}
 
 		// Add enums
 
@@ -1411,15 +1456,17 @@ Error BindingsGenerator::_generate_cs_type(const TypeInterface &itype, const Str
 	if (itype.is_singleton) {
 		InternalCall singleton_icall = InternalCall(itype.api_type, ICALL_PREFIX + itype.name + SINGLETON_ICALL_SUFFIX, "IntPtr");
 
-		if (!find_icall_by_name(singleton_icall.name, custom_icalls))
+		if (!find_icall_by_name(singleton_icall.name, custom_icalls)) {
 			custom_icalls.push_back(singleton_icall);
+		}
 	}
 
 	if (is_derived_type && itype.is_instantiable) {
 		InternalCall ctor_icall = InternalCall(itype.api_type, ctor_method, "IntPtr", itype.proxy_name + " obj");
 
-		if (!find_icall_by_name(ctor_icall.name, custom_icalls))
+		if (!find_icall_by_name(ctor_icall.name, custom_icalls)) {
 			custom_icalls.push_back(ctor_icall);
+		}
 	}
 
 	output.append(INDENT1 CLOSE_BLOCK /* class */
@@ -1497,8 +1544,9 @@ Error BindingsGenerator::_generate_cs_property(const BindingsGenerator::TypeInte
 
 	p_output.append(MEMBER_BEGIN "public ");
 
-	if (p_itype.is_singleton)
+	if (p_itype.is_singleton) {
 		p_output.append("static ");
+	}
 
 	p_output.append(prop_itype->cs_type);
 	p_output.append(" ");
@@ -1588,26 +1636,30 @@ Error BindingsGenerator::_generate_cs_method(const BindingsGenerator::TypeInterf
 		// Add the current arguments to the signature
 		// If the argument has a default value which is not a constant, we will make it Nullable
 		{
-			if (F != p_imethod.arguments.front())
+			if (F != p_imethod.arguments.front()) {
 				arguments_sig += ", ";
+			}
 
-			if (iarg.def_param_mode == ArgumentInterface::NULLABLE_VAL)
+			if (iarg.def_param_mode == ArgumentInterface::NULLABLE_VAL) {
 				arguments_sig += "Nullable<";
+			}
 
 			arguments_sig += arg_type->cs_type;
 
-			if (iarg.def_param_mode == ArgumentInterface::NULLABLE_VAL)
+			if (iarg.def_param_mode == ArgumentInterface::NULLABLE_VAL) {
 				arguments_sig += "> ";
-			else
+			} else {
 				arguments_sig += " ";
+			}
 
 			arguments_sig += iarg.name;
 
 			if (iarg.default_argument.size()) {
-				if (iarg.def_param_mode != ArgumentInterface::CONSTANT)
+				if (iarg.def_param_mode != ArgumentInterface::CONSTANT) {
 					arguments_sig += " = null";
-				else
+				} else {
 					arguments_sig += " = " + sformat(iarg.default_argument, arg_type->cs_type);
+				}
 			}
 		}
 
@@ -1625,17 +1677,19 @@ Error BindingsGenerator::_generate_cs_method(const BindingsGenerator::TypeInterf
 			cs_in_statements += " = ";
 			cs_in_statements += iarg.name;
 
-			if (iarg.def_param_mode == ArgumentInterface::NULLABLE_VAL)
+			if (iarg.def_param_mode == ArgumentInterface::NULLABLE_VAL) {
 				cs_in_statements += ".HasValue ? ";
-			else
+			} else {
 				cs_in_statements += " != null ? ";
+			}
 
 			cs_in_statements += iarg.name;
 
-			if (iarg.def_param_mode == ArgumentInterface::NULLABLE_VAL)
+			if (iarg.def_param_mode == ArgumentInterface::NULLABLE_VAL) {
 				cs_in_statements += ".Value : ";
-			else
+			} else {
 				cs_in_statements += " : ";
+			}
 
 			String cs_type = arg_type->cs_type;
 			if (cs_type.ends_with("[]")) {
@@ -1697,8 +1751,9 @@ Error BindingsGenerator::_generate_cs_method(const BindingsGenerator::TypeInterf
 		}
 
 		if (p_imethod.is_deprecated) {
-			if (p_imethod.deprecation_message.empty())
+			if (p_imethod.deprecation_message.empty()) {
 				WARN_PRINT("An empty deprecation message is discouraged. Method: '" + p_imethod.proxy_name + "'.");
+			}
 
 			p_output.append(MEMBER_BEGIN "[Obsolete(\"");
 			p_output.append(p_imethod.deprecation_message);
@@ -1758,8 +1813,9 @@ Error BindingsGenerator::_generate_cs_method(const BindingsGenerator::TypeInterf
 		im_call += ".";
 		im_call += im_icall->name;
 
-		if (p_imethod.arguments.size())
+		if (p_imethod.arguments.size()) {
 			p_output.append(cs_in_statements);
+		}
 
 		if (return_type->cname == name_cache.type_void) {
 			p_output.append(im_call + "(" + icall_params + ");\n");
@@ -1823,8 +1879,9 @@ Error BindingsGenerator::generate_glue(const String &p_output_dir) {
 			String singleton_icall_name = ICALL_PREFIX + itype.name + SINGLETON_ICALL_SUFFIX;
 			InternalCall singleton_icall = InternalCall(itype.api_type, singleton_icall_name, "IntPtr");
 
-			if (!find_icall_by_name(singleton_icall.name, custom_icalls))
+			if (!find_icall_by_name(singleton_icall.name, custom_icalls)) {
 				custom_icalls.push_back(singleton_icall);
+			}
 
 			output.append("Object* ");
 			output.append(singleton_icall_name);
@@ -1836,8 +1893,9 @@ Error BindingsGenerator::generate_glue(const String &p_output_dir) {
 		if (is_derived_type && itype.is_instantiable) {
 			InternalCall ctor_icall = InternalCall(itype.api_type, ctor_method, "IntPtr", itype.proxy_name + " obj");
 
-			if (!find_icall_by_name(ctor_icall.name, custom_icalls))
+			if (!find_icall_by_name(ctor_icall.name, custom_icalls)) {
 				custom_icalls.push_back(ctor_icall);
+			}
 
 			output.append("Object* ");
 			output.append(ctor_method);
@@ -1936,8 +1994,9 @@ Error BindingsGenerator::generate_glue(const String &p_output_dir) {
 	output.append("\n#endif // MONO_GLUE_ENABLED\n");
 
 	Error save_err = _save_file(path::join(p_output_dir, "mono_glue.gen.cpp"), output);
-	if (save_err != OK)
+	if (save_err != OK) {
 		return save_err;
+	}
 
 	OS::get_singleton()->print("Mono glue generated successfully\n");
 
@@ -1960,8 +2019,9 @@ Error BindingsGenerator::_save_file(const String &p_path, const StringBuilder &p
 }
 
 Error BindingsGenerator::_generate_glue_method(const BindingsGenerator::TypeInterface &p_itype, const BindingsGenerator::MethodInterface &p_imethod, StringBuilder &p_output) {
-	if (p_imethod.is_virtual)
+	if (p_imethod.is_virtual) {
 		return OK; // Ignore
+	}
 
 	bool ret_void = p_imethod.return_type.cname == name_cache.type_void;
 
@@ -1989,10 +2049,13 @@ Error BindingsGenerator::_generate_glue_method(const BindingsGenerator::TypeInte
 				c_in_statements += sformat(", &%s_in);\n", c_param_name);
 			}
 		} else {
-			if (i > 0)
+			if (i > 0) {
 				c_args_var_content += ", ";
-			if (arg_type->c_in.size())
+			}
+
+			if (arg_type->c_in.size()) {
 				c_in_statements += sformat(arg_type->c_in, arg_type->c_type, c_param_name);
+			}
 			c_args_var_content += sformat(arg_type->c_arg_in, c_param_name);
 		}
 
@@ -2022,8 +2085,9 @@ Error BindingsGenerator::_generate_glue_method(const BindingsGenerator::TypeInte
 	if (!generated_icall_funcs.find(im_icall)) {
 		generated_icall_funcs.push_back(im_icall);
 
-		if (im_icall->editor_only)
+		if (im_icall->editor_only) {
 			p_output.append("#ifdef TOOLS_ENABLED\n");
+		}
 
 		// Generate icall function
 
@@ -2141,8 +2205,9 @@ Error BindingsGenerator::_generate_glue_method(const BindingsGenerator::TypeInte
 
 		p_output.append(CLOSE_BLOCK "\n");
 
-		if (im_icall->editor_only)
+		if (im_icall->editor_only) {
 			p_output.append("#endif // TOOLS_ENABLED\n");
+		}
 	}
 
 	return OK;
@@ -2151,19 +2216,22 @@ Error BindingsGenerator::_generate_glue_method(const BindingsGenerator::TypeInte
 const BindingsGenerator::TypeInterface *BindingsGenerator::_get_type_or_null(const TypeReference &p_typeref) {
 	const RBMap<StringName, TypeInterface>::Element *builtin_type_match = builtin_types.find(p_typeref.cname);
 
-	if (builtin_type_match)
+	if (builtin_type_match) {
 		return &builtin_type_match->get();
+	}
 
 	const OrderedHashMap<StringName, TypeInterface>::Element obj_type_match = obj_types.find(p_typeref.cname);
 
-	if (obj_type_match)
+	if (obj_type_match) {
 		return &obj_type_match.get();
+	}
 
 	if (p_typeref.is_enum) {
 		const RBMap<StringName, TypeInterface>::Element *enum_match = enum_types.find(p_typeref.cname);
 
-		if (enum_match)
+		if (enum_match) {
 			return &enum_match->get();
+		}
 
 		// Enum not found. Most likely because none of its constants were bound, so it's empty. That's fine. Use int instead.
 		const RBMap<StringName, TypeInterface>::Element *int_match = builtin_types.find(name_cache.type_int);
@@ -2177,15 +2245,17 @@ const BindingsGenerator::TypeInterface *BindingsGenerator::_get_type_or_null(con
 const BindingsGenerator::TypeInterface *BindingsGenerator::_get_type_or_placeholder(const TypeReference &p_typeref) {
 	const TypeInterface *found = _get_type_or_null(p_typeref);
 
-	if (found)
+	if (found) {
 		return found;
+	}
 
 	ERR_PRINT(String() + "Type not found. Creating placeholder: '" + p_typeref.cname.operator String() + "'.");
 
 	const RBMap<StringName, TypeInterface>::Element *match = placeholder_types.find(p_typeref.cname);
 
-	if (match)
+	if (match) {
 		return &match->get();
+	}
 
 	TypeInterface placeholder;
 	TypeInterface::create_placeholder_type(placeholder, p_typeref.cname);
@@ -2305,18 +2375,21 @@ bool BindingsGenerator::_populate_object_type_interfaces() {
 		for (const List<PropertyInfo>::Element *E = property_list.front(); E; E = E->next()) {
 			const PropertyInfo &property = E->get();
 
-			if (property.usage & PROPERTY_USAGE_GROUP || property.usage & PROPERTY_USAGE_CATEGORY)
+			if (property.usage & PROPERTY_USAGE_GROUP || property.usage & PROPERTY_USAGE_CATEGORY) {
 				continue;
+			}
 
 			PropertyInterface iprop;
 			iprop.cname = property.name;
 			iprop.setter = ClassDB::get_property_setter(type_cname, iprop.cname);
 			iprop.getter = ClassDB::get_property_getter(type_cname, iprop.cname);
 
-			if (iprop.setter != StringName())
+			if (iprop.setter != StringName()) {
 				accessor_methods[iprop.setter] = iprop.cname;
-			if (iprop.getter != StringName())
+			}
+			if (iprop.getter != StringName()) {
 				accessor_methods[iprop.getter] = iprop.cname;
+			}
 
 			bool valid = false;
 			iprop.index = ClassDB::get_property_index(type_cname, iprop.cname, &valid);
@@ -2362,20 +2435,23 @@ bool BindingsGenerator::_populate_object_type_interfaces() {
 
 			int argc = method_info.arguments.size();
 
-			if (method_info.name.empty())
+			if (method_info.name.empty()) {
 				continue;
+			}
 
 			String cname = method_info.name;
 
-			if (blacklisted_methods.find(itype.cname) && blacklisted_methods[itype.cname].find(cname))
+			if (blacklisted_methods.find(itype.cname) && blacklisted_methods[itype.cname].find(cname)) {
 				continue;
+			}
 
 			MethodInterface imethod;
 			imethod.name = method_info.name;
 			imethod.cname = cname;
 
-			if (method_info.flags & METHOD_FLAG_VIRTUAL)
+			if (method_info.flags & METHOD_FLAG_VIRTUAL) {
 				imethod.is_virtual = true;
+			}
 
 			PropertyInfo return_info = method_info.return_val;
 
@@ -2606,6 +2682,106 @@ bool BindingsGenerator::_populate_object_type_interfaces() {
 	return true;
 }
 
+CharType BindingsGenerator::get_float_qualifier() {
+#ifdef REAL_T_IS_DOUBLE
+	return '';
+#else
+	return 'f';
+#endif
+}
+
+String BindingsGenerator::vector2_to_new_str(const Vector2 &v) {
+	String s = "new Vector2(";
+
+	s += String::num(v.x);
+	s += get_float_qualifier();
+	s += ", ";
+	s += String::num(v.y);
+	s += get_float_qualifier();
+
+	s += ")";
+
+	return s;
+}
+
+String BindingsGenerator::vector3_to_new_str(const Vector3 &v) {
+	String s = "new Vector3(";
+
+	s += String::num(v.x);
+	s += get_float_qualifier();
+	s += ", ";
+	s += String::num(v.y);
+	s += get_float_qualifier();
+	s += ", ";
+	s += String::num(v.z);
+	s += get_float_qualifier();
+
+	s += ")";
+
+	return s;
+}
+
+String BindingsGenerator::vector4_to_new_str(const Vector4 &v) {
+	String s = "new Vector4(";
+
+	s += String::num(v.x);
+	s += get_float_qualifier();
+	s += ", ";
+	s += String::num(v.y);
+	s += get_float_qualifier();
+	s += ", ";
+	s += String::num(v.z);
+	s += get_float_qualifier();
+	s += ", ";
+	s += String::num(v.w);
+	s += get_float_qualifier();
+
+	s += ")";
+
+	return s;
+}
+
+String BindingsGenerator::color_to_new_str(const Color &v) {
+	String s = "new Color(";
+
+	s += String::num(v.r);
+	s += get_float_qualifier();
+	s += ", ";
+	s += String::num(v.g);
+	s += get_float_qualifier();
+	s += ", ";
+	s += String::num(v.b);
+	s += get_float_qualifier();
+	s += ", ";
+	s += String::num(v.a);
+	s += get_float_qualifier();
+
+	s += ")";
+
+	return s;
+}
+
+String BindingsGenerator::quaternion_to_new_str(const Quaternion &v) {
+	String s = "new Quaternion(";
+
+	s += String::num(v.x);
+	s += get_float_qualifier();
+	s += ", ";
+	s += String::num(v.y);
+	s += get_float_qualifier();
+	s += ", ";
+	s += String::num(v.z);
+	s += get_float_qualifier();
+	s += ", ";
+	s += String::num(v.w);
+	s += get_float_qualifier();
+
+	s += ")";
+
+	return s;
+}
+
+
 bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, ArgumentInterface &r_iarg) {
 	r_iarg.default_argument = p_val;
 
@@ -2625,7 +2801,17 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 			break;
 		case Variant::REAL:
 			if (r_iarg.type.cname == "float") {
-				r_iarg.default_argument += "f";
+				if (r_iarg.default_argument.is_numeric()) {
+					r_iarg.default_argument += "f";
+				} else {
+					if (r_iarg.default_argument == "inf") {
+						r_iarg.default_argument = "float.PositiveInfinity";
+					} else if (r_iarg.default_argument == "-inf") {
+						r_iarg.default_argument = "float.NegativeInfinity";
+					} else if (r_iarg.default_argument == "nan") {
+						r_iarg.default_argument = "float.NaN";
+					}
+				}
 			}
 			break;
 		case Variant::STRING:
@@ -2644,36 +2830,48 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 			break;
 		case Variant::PLANE: {
 			Plane plane = p_val.operator Plane();
-			r_iarg.default_argument = "new Plane(new Vector3(" + plane.normal.operator String() + "), " + rtos(plane.d) + ")";
+			r_iarg.default_argument = "new Plane(new Vector3" + vector3_to_new_str(plane.normal) + ", " + rtos(plane.d);
+			r_iarg.default_argument += get_float_qualifier();
+			r_iarg.default_argument += ")";
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
 		case Variant::AABB: {
 			AABB aabb = p_val.operator ::AABB();
-			r_iarg.default_argument = "new AABB(new Vector3(" + aabb.position.operator String() + "), new Vector3(" + aabb.size.operator String() + "))";
+			r_iarg.default_argument = "new AABB(" + vector3_to_new_str(aabb.position) + ", " + vector3_to_new_str(aabb.size) + ")";
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
 		case Variant::RECT2: {
 			Rect2 rect = p_val.operator Rect2();
-			r_iarg.default_argument = "new Rect2(new Vector2(" + rect.position.operator String() + "), new Vector2(" + rect.size.operator String() + "))";
+			r_iarg.default_argument = "new Rect2(" + vector2_to_new_str(rect.position) + ", " + vector2_to_new_str(rect.size) + ")";
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
 		case Variant::RECT2I: {
 			Rect2i rect = p_val.operator Rect2i();
-			r_iarg.default_argument = "new Rect2I(new Vector2I(" + rect.position.operator String() + "), new Vector2I(" + rect.size.operator String() + "))";
+			r_iarg.default_argument = "new Rect2I(new Vector2I" + rect.position.operator String() + ", new Vector2I" + rect.size.operator String() + ")";
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
 		case Variant::COLOR: {
-			if (r_iarg.default_argument == "1,1,1,1") {
-				r_iarg.default_argument = "1, 1, 1, 1";
-			}
-			r_iarg.default_argument = "new Color(" + r_iarg.default_argument + ")";
+			Color c = p_val.operator Color();
+			r_iarg.default_argument = color_to_new_str(c);
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
-		case Variant::VECTOR2:
+		case Variant::VECTOR2: {
+			Vector2 v2 = p_val.operator Vector2();
+			r_iarg.default_argument = vector2_to_new_str(v2);
+			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
+		} break;
+		case Variant::VECTOR3: {
+			Vector3 v3 = p_val.operator Vector3();
+			r_iarg.default_argument = vector3_to_new_str(v3);
+			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
+		} break;
+		case Variant::VECTOR4: {
+			Vector4 v4 = p_val.operator Vector4();
+			r_iarg.default_argument = vector4_to_new_str(v4);
+			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
+		} break;
 		case Variant::VECTOR2I:
-		case Variant::VECTOR3:
 		case Variant::VECTOR3I:
-		case Variant::VECTOR4:
 		case Variant::VECTOR4I:
 			r_iarg.default_argument = "new %s" + r_iarg.default_argument;
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
@@ -2720,7 +2918,7 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 			if (transform == Transform2D()) {
 				r_iarg.default_argument = "Transform2D.Identity";
 			} else {
-				r_iarg.default_argument = "new Transform2D(new Vector2" + transform.columns[0].operator String() + ", new Vector2" + transform.columns[1].operator String() + ", new Vector2" + transform.columns[2].operator String() + ")";
+				r_iarg.default_argument = "new Transform2D(" + vector2_to_new_str(transform.columns[0]) + ", " + vector2_to_new_str(transform.columns[1]) + ", " + vector2_to_new_str(transform.columns[2]) + ")";
 			}
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
@@ -2730,7 +2928,7 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 				r_iarg.default_argument = "Transform.Identity";
 			} else {
 				Basis basis = transform.basis;
-				r_iarg.default_argument = "new Transform(new Vector3" + basis.get_column(0).operator String() + ", new Vector3" + basis.get_column(1).operator String() + ", new Vector3" + basis.get_column(2).operator String() + ", new Vector3" + transform.origin.operator String() + ")";
+				r_iarg.default_argument = "new Transform(" + vector3_to_new_str(basis.get_column(0)) + ", " + vector3_to_new_str(basis.get_column(1)) + ", " + vector3_to_new_str(basis.get_column(2)) + ", " + vector3_to_new_str(transform.origin) + ")";
 			}
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
@@ -2739,7 +2937,7 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 			if (basis == Basis()) {
 				r_iarg.default_argument = "Basis.Identity";
 			} else {
-				r_iarg.default_argument = "new Basis(new Vector3" + basis.get_column(0).operator String() + ", new Vector3" + basis.get_column(1).operator String() + ", new Vector3" + basis.get_column(2).operator String() + ")";
+				r_iarg.default_argument = "new Basis(" + vector3_to_new_str(basis.get_column(0)) + ", " + vector3_to_new_str(basis.get_column(1)) + ", " + vector3_to_new_str(basis.get_column(2)) + ")";
 			}
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
@@ -2748,7 +2946,7 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 			if (projection == Projection()) {
 				r_iarg.default_argument = "Projection.Identity";
 			} else {
-				r_iarg.default_argument = "new Projection(new Vector4" + projection.matrix[0].operator String() + ", new Vector4" + projection.matrix[1].operator String() + ", new Vector4" + projection.matrix[2].operator String() + ", new Vector4" + projection.matrix[3].operator String() + ")";
+				r_iarg.default_argument = "new Projection(" + vector4_to_new_str(projection.matrix[0]) + ", " + vector4_to_new_str(projection.matrix[1]) + ", " + vector4_to_new_str(projection.matrix[2]) + ", " + vector4_to_new_str(projection.matrix[3]) + ")";
 			}
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
@@ -2757,7 +2955,7 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 			if (quat == Quaternion()) {
 				r_iarg.default_argument = "Quaternion.Identity";
 			} else {
-				r_iarg.default_argument = "new Quaternion" + quat.operator String();
+				r_iarg.default_argument = quaternion_to_new_str(quat);
 			}
 			r_iarg.def_param_mode = ArgumentInterface::NULLABLE_VAL;
 		} break;
@@ -2766,8 +2964,9 @@ bool BindingsGenerator::_arg_default_value_from_variant(const Variant &p_val, Ar
 			break;
 	}
 
-	if (r_iarg.def_param_mode == ArgumentInterface::CONSTANT && r_iarg.type.cname == name_cache.type_Variant && r_iarg.default_argument != "null")
+	if (r_iarg.def_param_mode == ArgumentInterface::CONSTANT && r_iarg.type.cname == name_cache.type_Variant && r_iarg.default_argument != "null") {
 		r_iarg.def_param_mode = ArgumentInterface::NULLABLE_REF;
+	}
 
 	return true;
 }
@@ -2796,6 +2995,7 @@ void BindingsGenerator::_populate_builtin_type_interfaces() {
 	INSERT_STRUCT_TYPE(Vector2)
 	INSERT_STRUCT_TYPE(Vector2i)
 	INSERT_STRUCT_TYPE(Rect2)
+	INSERT_STRUCT_TYPE(Rect2i)
 	INSERT_STRUCT_TYPE(Transform2D)
 	INSERT_STRUCT_TYPE(Vector3)
 	INSERT_STRUCT_TYPE(Vector3i)
@@ -3198,8 +3398,9 @@ void BindingsGenerator::_initialize() {
 	core_custom_icalls.clear();
 	editor_custom_icalls.clear();
 
-	for (OrderedHashMap<StringName, TypeInterface>::Element E = obj_types.front(); E; E = E.next())
+	for (OrderedHashMap<StringName, TypeInterface>::Element E = obj_types.front(); E; E = E.next()) {
 		_generate_method_icalls(E.get());
+	}
 
 	initialized = true;
 }

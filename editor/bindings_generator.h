@@ -31,8 +31,8 @@
 #ifndef BINDINGS_GENERATOR_H
 #define BINDINGS_GENERATOR_H
 
-#include "core/object/class_db.h"
 #include "core/containers/ordered_hash_map.h"
+#include "core/object/class_db.h"
 #include "core/string/string_builder.h"
 #include "editor/doc/doc_data.h"
 #include "editor/editor_help.h"
@@ -626,6 +626,13 @@ class BindingsGenerator {
 
 	StringName _get_int_type_name_from_meta(PandemoniumTypeInfo::Metadata p_meta);
 	StringName _get_float_type_name_from_meta(PandemoniumTypeInfo::Metadata p_meta);
+
+	CharType get_float_qualifier();
+	String vector2_to_new_str(const Vector2 &v);
+	String vector3_to_new_str(const Vector3 &v);
+	String vector4_to_new_str(const Vector4 &v);
+	String color_to_new_str(const Color &v);
+	String quaternion_to_new_str(const Quaternion &v);
 
 	bool _arg_default_value_from_variant(const Variant &p_val, ArgumentInterface &r_iarg);
 
