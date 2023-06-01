@@ -42,22 +42,28 @@ StringName *godot_icall_StringName_String_Ctor(MonoString *p_path) {
 	return memnew(StringName(GDMonoMarshal::mono_string_to_godot(p_path)));
 }
 
+StringName *godot_icall_StringName_StringName_Ctor(StringName *p_path) {
+	return memnew(StringName(*p_path));
+}
+
 void godot_icall_StringName_Dtor(StringName *p_ptr) {
 	ERR_FAIL_NULL(p_ptr);
 	memdelete(p_ptr);
 }
 
 MonoString *godot_icall_StringName_operator_String(StringName *p_np) {
-	return GDMonoMarshal::mono_string_from_godot(p_np->operator String());
+	String s = p_np->operator String();
+	return GDMonoMarshal::mono_string_from_godot(s);
 }
 
-bool godot_icall_StringName_operator_Equals(StringName *p_sn1, StringName *p_sn2) {
-	return p_sn1->operator==(*p_sn2);
+MonoBoolean godot_icall_StringName_operator_Equals(StringName *p_sn1, StringName *p_sn2) {
+	return (MonoBoolean)p_sn1->operator==(*p_sn2);
 }
 
 void godot_register_stringname_icalls() {
 	GDMonoUtils::add_internal_call("Godot.StringName::godot_icall_StringName_Ctor", godot_icall_StringName_Ctor);
 	GDMonoUtils::add_internal_call("Godot.StringName::godot_icall_StringName_String_Ctor", godot_icall_StringName_String_Ctor);
+	GDMonoUtils::add_internal_call("Godot.StringName::godot_icall_StringName_StringName_Ctor", godot_icall_StringName_StringName_Ctor);
 	GDMonoUtils::add_internal_call("Godot.StringName::godot_icall_StringName_Dtor", godot_icall_StringName_Dtor);
 	GDMonoUtils::add_internal_call("Godot.StringName::godot_icall_StringName_operator_String", godot_icall_StringName_operator_String);
 	GDMonoUtils::add_internal_call("Godot.StringName::godot_icall_StringName_operator_Equals", godot_icall_StringName_operator_Equals);

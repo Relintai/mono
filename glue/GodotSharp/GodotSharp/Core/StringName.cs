@@ -70,6 +70,11 @@ namespace Godot
             ptr = godot_icall_StringName_String_Ctor(path);
         }
 
+        public StringName(StringName other)
+        {
+            ptr = godot_icall_StringName_StringName_Ctor(StringName.GetPtr(other));
+        }
+
         public static implicit operator StringName(string from)
         {
             return new StringName(from);
@@ -86,17 +91,7 @@ namespace Godot
         /// <returns>A string representation of this <see cref="StringName"/>.</returns>
         public override string ToString()
         {
-            return (string)this;
-        }
-
-        public static bool operator ==(StringName left, StringName right)
-        {
-            return godot_icall_StringName_operator_Equals(StringName.GetPtr(left), StringName.GetPtr(right));
-        }
-
-        public static bool operator !=(StringName left, StringName right)
-        {
-            return !left.Equals(right);
+            return godot_icall_StringName_operator_String(StringName.GetPtr(this));
         }
 
         public override bool Equals(object obj)
@@ -124,6 +119,9 @@ namespace Godot
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern IntPtr godot_icall_StringName_String_Ctor(string path);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern IntPtr godot_icall_StringName_StringName_Ctor(IntPtr ptr);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void godot_icall_StringName_Dtor(IntPtr ptr);

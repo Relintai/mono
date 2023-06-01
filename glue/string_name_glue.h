@@ -41,11 +41,13 @@ StringName *godot_icall_StringName_Ctor();
 
 StringName *godot_icall_StringName_String_Ctor(MonoString *p_path);
 
+StringName *godot_icall_StringName_StringName_Ctor(StringName *p_path);
+
 void godot_icall_StringName_Dtor(StringName *p_ptr);
 
 MonoString *godot_icall_StringName_operator_String(StringName *p_np);
 
-bool godot_icall_StringName_operator_Equals(StringName *p_sn1, StringName *p_sn2);
+MonoBoolean godot_icall_StringName_operator_Equals(StringName *p_sn1, StringName *p_sn2);
 
 // Register internal calls
 
