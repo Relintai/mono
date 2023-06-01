@@ -47,10 +47,6 @@ namespace Godot
             Row3[3] = 1;
         }
 
-        public Projection() {
-            set_identity();
-        }
-
         public Projection(Vector4 Row0, Vector4 Row1, Vector4 Row2, Vector4 Row3) {
             this.Row0 = Row0;
             this.Row1 = Row1;

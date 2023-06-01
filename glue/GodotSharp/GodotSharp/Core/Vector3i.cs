@@ -1,7 +1,7 @@
 #if REAL_T_IS_DOUBLE
-using int = System.Double;
+using real_t = System.Double;
 #else
-using int = System.Single;
+using real_t = System.Single;
 #endif
 using System;
 using System.Runtime.InteropServices;
@@ -13,7 +13,7 @@ namespace Godot
     /// </summary>
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Vector4I : IEquatable<Vector4I>
+    public struct Vector3i : IEquatable<Vector3i>
     {
         /// <summary>
         /// The vector's X component. Also accessible by using the index position <c>[0]</c>.
@@ -30,32 +30,28 @@ namespace Godot
         /// </summary>
         public int z;
 
-        public int w;
-
         /// <summary>
-        /// Constructs a new <see cref="Vector4I"/> with the given components.
+        /// Constructs a new <see cref="Vector3i"/> with the given components.
         /// </summary>
         /// <param name="x">The vector's X component.</param>
         /// <param name="y">The vector's Y component.</param>
         /// <param name="z">The vector's Z component.</param>
-        public Vector4I(int x, int y, int z, int w)
+        public Vector3i(int x, int y, int z)
         {
             this.x = x;
             this.y = y;
             this.z = z;
-            this.w = w;
         }
 
         /// <summary>
-        /// Constructs a new <see cref="Vector4I"/> from an existing <see cref="Vector4I"/>.
+        /// Constructs a new <see cref="Vector3i"/> from an existing <see cref="Vector3i"/>.
         /// </summary>
-        /// <param name="v">The existing <see cref="Vector4I"/>.</param>
-        public Vector4I(Vector4I v)
+        /// <param name="v">The existing <see cref="Vector3i"/>.</param>
+        public Vector3i(Vector3i v)
         {
             x = v.x;
             y = v.y;
             z = v.z;
-            w = v.w;
         }
 
         /// <summary>
@@ -68,9 +64,9 @@ namespace Godot
         /// <returns>Whether or not the vector and the object are equal.</returns>
         public override bool Equals(object obj)
         {
-            if (obj is Vector4I)
+            if (obj is Vector3i)
             {
-                return Equals((Vector4I)obj);
+                return Equals((Vector3i)obj);
             }
 
             return false;
@@ -83,36 +79,36 @@ namespace Godot
         /// </summary>
         /// <param name="other">The other vector.</param>
         /// <returns>Whether or not the vectors are exactly equal.</returns>
-        public bool Equals(Vector4I other)
+        public bool Equals(Vector3i other)
         {
-            return x == other.x && y == other.y && z == other.z && w == other.w;
+            return x == other.x && y == other.y && z == other.z;
         }
         
         /// <summary>
-        /// Serves as the hash function for <see cref="Vector4I"/>.
+        /// Serves as the hash function for <see cref="Vector3i"/>.
         /// </summary>
         /// <returns>A hash code for this vector.</returns>
         public override int GetHashCode()
         {
-            return y.GetHashCode() ^ x.GetHashCode() ^ z.GetHashCode() ^ w.GetHashCode();
+            return y.GetHashCode() ^ x.GetHashCode() ^ z.GetHashCode();
         }
 
         /// <summary>
-        /// Converts this <see cref="Vector4I"/> to a string.
+        /// Converts this <see cref="Vector3i"/> to a string.
         /// </summary>
         /// <returns>A string representation of this vector.</returns>
         public override string ToString()
         {
-            return $"({x}, {y}, {z}, {w})";
+            return $"({x}, {y}, {z})";
         }
 
         /// <summary>
-        /// Converts this <see cref="Vector4I"/> to a string with the given <paramref name="format"/>.
+        /// Converts this <see cref="Vector3i"/> to a string with the given <paramref name="format"/>.
         /// </summary>
         /// <returns>A string representation of this vector.</returns>
         public string ToString(string format)
         {
-            return $"({x.ToString(format)}, {y.ToString(format)}, {z.ToString(format), {w.ToString(format)})";
+            return $"({x.ToString(format)}, {y.ToString(format)}, {z.ToString(format)})";
         }
     }
 }

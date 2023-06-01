@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Godot
 {
-    public sealed partial class StringName : IDisposable
+    public sealed partial class StringName : IDisposable, IEquatable<StringName>
     {
         private bool _disposed = false;
 
@@ -94,9 +94,29 @@ namespace Godot
             return godot_icall_StringName_operator_String(StringName.GetPtr(left), StringName.GetPtr(right));
         }
 
-        public static bool operator !=(Rect2 left, Rect2 right)
+        public static bool operator !=(StringName left, StringName right)
         {
             return !left.Equals(right);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is StringName)
+            {
+                return Equals((StringName)obj);
+            }
+
+            return false;
+        }
+
+        public bool Equals(StringName other)
+        {
+             return godot_icall_StringName_operator_String(StringName.GetPtr(left), StringName.GetPtr(right));
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)ptr;
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]

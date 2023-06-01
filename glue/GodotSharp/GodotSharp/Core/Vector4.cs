@@ -112,7 +112,7 @@ namespace Godot
         /// <returns>A string representation of this vector.</returns>
         public string ToString(string format)
         {
-            return $"({x.ToString(format)}, {y.ToString(format)}, {z.ToString(format), {w.ToString(format)})";
+            return $"({x.ToString(format)}, {y.ToString(format)}, {z.ToString(format)}, {w.ToString(format)})";
         }
     }
 }
