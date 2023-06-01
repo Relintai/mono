@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  glue_header.h                                                         */
+/*  nodepath_glue.h                                                       */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,59 +28,29 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef GLUE_HEADER_H
-#define GLUE_HEADER_H
+#ifndef NODEPATH_GLUE_H
+#define NODEPATH_GLUE_H
 
 #ifdef MONO_GLUE_ENABLED
 
-#include "base_object_glue.h"
-#include "collections_glue.h"
-#include "gd_glue.h"
-#include "nodepath_glue.h"
-#include "rid_glue.h"
-#include "string_glue.h"
-#include "string_name_glue.h"
+#include "core/string/string_name.h"
 
-/**
- * Registers internal calls that were not generated. This function is called
- * from the generated GodotSharpBindings::register_generated_icalls() function.
- */
-void godot_register_glue_header_icalls() {
-	godot_register_collections_icalls();
-	godot_register_gd_icalls();
-	godot_register_nodepath_icalls();
-	godot_register_object_icalls();
-	godot_register_rid_icalls();
-	godot_register_string_icalls();
-	godot_register_nodepath_icalls();
-}
+#include "../mono_gd/gd_mono_marshal.h"
 
-// Used by the generated glue
+StringName *godot_icall_StringName_Ctor();
 
-#include "core/variant/array.h"
-#include "core/object/class_db.h"
-#include "core/variant/dictionary.h"
-#include "core/config/engine.h"
-#include "core/method_bind.h"
-#include "core/string/node_path.h"
-#include "core/object/object.h"
-#include "core/object/reference.h"
-#include "core/typedefs.h"
-#include "core/string/ustring.h"
+StringName *godot_icall_StringName_String_Ctor(MonoString *p_path);
 
-#include "../mono_gd/gd_mono_class.h"
-#include "../mono_gd/gd_mono_internals.h"
-#include "../mono_gd/gd_mono_utils.h"
+void godot_icall_StringName_Dtor(StringName *p_ptr);
 
-#define GODOTSHARP_INSTANCE_OBJECT(m_instance, m_type) \
-	static ClassDB::ClassInfo *ci = NULL;              \
-	if (!ci) {                                         \
-		ci = ClassDB::classes.getptr(m_type);          \
-	}                                                  \
-	Object *m_instance = ci->creation_func();
+MonoString *godot_icall_StringName_operator_String(StringName *p_np);
 
-#include "arguments_vector.h"
+bool godot_icall_StringName_operator_Equals(StringName *p_sn1, StringName *p_sn2);
+
+// Register internal calls
+
+void godot_register_stringname_icalls();
 
 #endif // MONO_GLUE_ENABLED
 
-#endif // GLUE_HEADER_H
+#endif // NODEPATH_GLUE_H

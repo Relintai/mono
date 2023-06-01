@@ -409,15 +409,17 @@ bool CSharpLanguage::supports_builtin_mode() const {
 
 #ifdef TOOLS_ENABLED
 static String variant_type_to_managed_name(const String &p_var_type_name) {
-	if (p_var_type_name.empty())
+	if (p_var_type_name.empty()) {
 		return "object";
+	}
 
 	if (!ClassDB::class_exists(p_var_type_name)) {
 		return p_var_type_name;
 	}
 
-	if (p_var_type_name == Variant::get_type_name(Variant::OBJECT))
+	if (p_var_type_name == Variant::get_type_name(Variant::OBJECT)) {
 		return "Godot.Object";
+	}
 
 	if (p_var_type_name == Variant::get_type_name(Variant::REAL)) {
 #ifdef REAL_T_IS_DOUBLE
@@ -427,19 +429,26 @@ static String variant_type_to_managed_name(const String &p_var_type_name) {
 #endif
 	}
 
-	if (p_var_type_name == Variant::get_type_name(Variant::STRING))
+	if (p_var_type_name == Variant::get_type_name(Variant::STRING)) {
 		return "string"; // I prefer this one >:[
+	}
 
-	if (p_var_type_name == Variant::get_type_name(Variant::DICTIONARY))
+	if (p_var_type_name == Variant::get_type_name(Variant::DICTIONARY)) {
 		return "Collections.Dictionary";
+	}
 
-	if (p_var_type_name == Variant::get_type_name(Variant::ARRAY))
+	if (p_var_type_name == Variant::get_type_name(Variant::ARRAY)) {
 		return "Collections.Array";
+	}
 
-	if (p_var_type_name == Variant::get_type_name(Variant::POOL_BYTE_ARRAY))
+	if (p_var_type_name == Variant::get_type_name(Variant::POOL_BYTE_ARRAY)) {
 		return "byte[]";
-	if (p_var_type_name == Variant::get_type_name(Variant::POOL_INT_ARRAY))
+	}
+
+	if (p_var_type_name == Variant::get_type_name(Variant::POOL_INT_ARRAY)) {
 		return "int[]";
+	}
+
 	if (p_var_type_name == Variant::get_type_name(Variant::POOL_REAL_ARRAY)) {
 #ifdef REAL_T_IS_DOUBLE
 		return "double[]";
@@ -447,14 +456,21 @@ static String variant_type_to_managed_name(const String &p_var_type_name) {
 		return "float[]";
 #endif
 	}
-	if (p_var_type_name == Variant::get_type_name(Variant::POOL_STRING_ARRAY))
+	if (p_var_type_name == Variant::get_type_name(Variant::POOL_STRING_ARRAY)) {
 		return "string[]";
-	if (p_var_type_name == Variant::get_type_name(Variant::POOL_VECTOR2_ARRAY))
+	}
+
+	if (p_var_type_name == Variant::get_type_name(Variant::POOL_VECTOR2_ARRAY)) {
 		return "Vector2[]";
-	if (p_var_type_name == Variant::get_type_name(Variant::POOL_VECTOR3_ARRAY))
+	}
+
+	if (p_var_type_name == Variant::get_type_name(Variant::POOL_VECTOR3_ARRAY)) {
 		return "Vector3[]";
-	if (p_var_type_name == Variant::get_type_name(Variant::POOL_COLOR_ARRAY))
+	}
+
+	if (p_var_type_name == Variant::get_type_name(Variant::POOL_COLOR_ARRAY)) {
 		return "Color[]";
+	}
 
 	Variant::Type var_types[] = {
 		Variant::BOOL,
@@ -474,8 +490,9 @@ static String variant_type_to_managed_name(const String &p_var_type_name) {
 	};
 
 	for (unsigned int i = 0; i < sizeof(var_types) / sizeof(Variant::Type); i++) {
-		if (p_var_type_name == Variant::get_type_name(var_types[i]))
+		if (p_var_type_name == Variant::get_type_name(var_types[i])) {
 			return p_var_type_name;
+		}
 	}
 
 	return "object";
