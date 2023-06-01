@@ -234,6 +234,18 @@ MonoObject *create_managed_from(const NodePath &p_from) {
 	return mono_object;
 }
 
+MonoObject *create_managed_from(const StringName &p_from) {
+	MonoObject *mono_object = mono_object_new(mono_domain_get(), CACHED_CLASS_RAW(StringName));
+	ERR_FAIL_NULL_V(mono_object, NULL);
+
+	// Construct
+	GDMonoUtils::runtime_object_init(mono_object, CACHED_CLASS(StringName));
+
+	CACHED_FIELD(StringName, ptr)->set_value_raw(mono_object, memnew(StringName(p_from)));
+
+	return mono_object;
+}
+
 MonoObject *create_managed_from(const RID &p_from) {
 	MonoObject *mono_object = mono_object_new(mono_domain_get(), CACHED_CLASS_RAW(RID));
 	ERR_FAIL_NULL_V(mono_object, NULL);

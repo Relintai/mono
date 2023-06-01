@@ -191,16 +191,38 @@ PoolColorArray mono_array_to_PoolColorArray(MonoArray *p_array);
 MonoArray *PoolVector2Array_to_mono_array(const PoolVector2Array &p_array);
 PoolVector2Array mono_array_to_PoolVector2Array(MonoArray *p_array);
 
+// PoolVector2iArray
+
+MonoArray *PoolVector2iArray_to_mono_array(const PoolVector2iArray &p_array);
+PoolVector2iArray mono_array_to_PoolVector2iArray(MonoArray *p_array);
+
 // PoolVector3Array
 
 MonoArray *PoolVector3Array_to_mono_array(const PoolVector3Array &p_array);
 PoolVector3Array mono_array_to_PoolVector3Array(MonoArray *p_array);
+
+// PoolVector3iArray
+
+MonoArray *PoolVector3iArray_to_mono_array(const PoolVector3iArray &p_array);
+PoolVector3iArray mono_array_to_PoolVector3iArray(MonoArray *p_array);
+
+// PoolVector4Array
+
+MonoArray *PoolVector4Array_to_mono_array(const PoolVector4Array &p_array);
+PoolVector4Array mono_array_to_PoolVector4Array(MonoArray *p_array);
+
+// PoolVector4iArray
+
+MonoArray *PoolVector4iArray_to_mono_array(const PoolVector4iArray &p_array);
+PoolVector4iArray mono_array_to_PoolVector4iArray(MonoArray *p_array);
 
 // Structures
 
 namespace InteropLayout {
 
 enum {
+	MATCHES_int = (sizeof(int) == sizeof(int32_t)),
+
 	MATCHES_float = (sizeof(float) == sizeof(uint32_t)),
 
 	MATCHES_double = (sizeof(double) == sizeof(uint64_t)),
@@ -219,6 +241,14 @@ enum {
 			offsetof(Rect2, position) == (sizeof(Vector2) * 0) &&
 			offsetof(Rect2, size) == (sizeof(Vector2) * 1)),
 
+	MATCHES_Vector2i = (MATCHES_int && (sizeof(Vector2i) == (sizeof(int32_t) * 2)) &&
+			offsetof(Vector2i, x) == (sizeof(int32_t) * 0) &&
+			offsetof(Vector2i, y) == (sizeof(int32_t) * 1)),
+
+	MATCHES_Rect2i = (MATCHES_Vector2i && (sizeof(Rect2i) == (sizeof(Vector2i) * 2)) &&
+			offsetof(Rect2i, position) == (sizeof(Vector2i) * 0) &&
+			offsetof(Rect2i, size) == (sizeof(Vector2i) * 1)),
+
 	MATCHES_Transform2D = (MATCHES_Vector2 && (sizeof(Transform2D) == (sizeof(Vector2) * 3))), // No field offset required, it stores an array
 
 	MATCHES_Vector3 = (MATCHES_real_t && (sizeof(Vector3) == (sizeof(real_t) * 3)) &&
@@ -226,7 +256,26 @@ enum {
 			offsetof(Vector3, y) == (sizeof(real_t) * 1) &&
 			offsetof(Vector3, z) == (sizeof(real_t) * 2)),
 
+	MATCHES_Vector3i = (MATCHES_int && (sizeof(Vector3i) == (sizeof(int32_t) * 3)) &&
+			offsetof(Vector3i, x) == (sizeof(int32_t) * 0) &&
+			offsetof(Vector3i, y) == (sizeof(int32_t) * 1) &&
+			offsetof(Vector3i, z) == (sizeof(int32_t) * 2)),
+
+	MATCHES_Vector4 = (MATCHES_real_t && (sizeof(Vector4) == (sizeof(real_t) * 4)) &&
+			offsetof(Vector4, x) == (sizeof(real_t) * 0) &&
+			offsetof(Vector4, y) == (sizeof(real_t) * 1) &&
+			offsetof(Vector4, z) == (sizeof(real_t) * 2) &&
+			offsetof(Vector4, w) == (sizeof(real_t) * 2)),
+
+	MATCHES_Vector4i = (MATCHES_int && (sizeof(Vector4i) == (sizeof(int32_t) * 4)) &&
+			offsetof(Vector4i, x) == (sizeof(int32_t) * 0) &&
+			offsetof(Vector4i, y) == (sizeof(int32_t) * 1) &&
+			offsetof(Vector4i, z) == (sizeof(int32_t) * 2) &&
+			offsetof(Vector4i, w) == (sizeof(int32_t) * 2)),
+
 	MATCHES_Basis = (MATCHES_Vector3 && (sizeof(Basis) == (sizeof(Vector3) * 3))), // No field offset required, it stores an array
+
+	MATCHES_Projection = (MATCHES_Vector4 && (sizeof(Projection) == (sizeof(Vector4) * 4))), // No field offset required, it stores an array
 
 	MATCHES_Quaternion = (MATCHES_real_t && (sizeof(Quaternion) == (sizeof(real_t) * 4)) &&
 			offsetof(Quaternion, x) == (sizeof(real_t) * 0) &&
@@ -293,6 +342,34 @@ struct M_Rect2 {
 	}
 };
 
+struct M_Vector2i {
+	int32_t x, y;
+
+	static _FORCE_INLINE_ Vector2i convert_to(const M_Vector2i &p_from) {
+		return Vector2(p_from.x, p_from.y);
+	}
+
+	static _FORCE_INLINE_ M_Vector2i convert_from(const Vector2i &p_from) {
+		M_Vector2i ret = { p_from.x, p_from.y };
+		return ret;
+	}
+};
+
+struct M_Rect2i {
+	M_Vector2i position;
+	M_Vector2i size;
+
+	static _FORCE_INLINE_ Rect2i convert_to(const M_Rect2i &p_from) {
+		return Rect2i(M_Vector2i::convert_to(p_from.position),
+				M_Vector2i::convert_to(p_from.size));
+	}
+
+	static _FORCE_INLINE_ M_Rect2i convert_from(const Rect2i &p_from) {
+		M_Rect2i ret = { M_Vector2i::convert_from(p_from.position), M_Vector2i::convert_from(p_from.size) };
+		return ret;
+	}
+};
+
 struct M_Transform2D {
 	M_Vector2 columns[3];
 
@@ -325,6 +402,45 @@ struct M_Vector3 {
 	}
 };
 
+struct M_Vector3i {
+	int32_t x, y, z;
+
+	static _FORCE_INLINE_ Vector3i convert_to(const M_Vector3i &p_from) {
+		return Vector3i(p_from.x, p_from.y, p_from.z);
+	}
+
+	static _FORCE_INLINE_ M_Vector3i convert_from(const Vector3i &p_from) {
+		M_Vector3i ret = { p_from.x, p_from.y, p_from.z };
+		return ret;
+	}
+};
+
+struct M_Vector4 {
+	real_t x, y, z, w;
+
+	static _FORCE_INLINE_ Vector4 convert_to(const M_Vector4 &p_from) {
+		return Vector4(p_from.x, p_from.y, p_from.z, p_from.w);
+	}
+
+	static _FORCE_INLINE_ M_Vector4 convert_from(const Vector4 &p_from) {
+		M_Vector4 ret = { p_from.x, p_from.y, p_from.z, p_from.w };
+		return ret;
+	}
+};
+
+struct M_Vector4i {
+	int32_t x, y, z, w;
+
+	static _FORCE_INLINE_ Vector4i convert_to(const M_Vector4i &p_from) {
+		return Vector4i(p_from.x, p_from.y, p_from.z, p_from.w);
+	}
+
+	static _FORCE_INLINE_ M_Vector4i convert_from(const Vector4i &p_from) {
+		M_Vector4i ret = { p_from.x, p_from.y, p_from.z, p_from.w };
+		return ret;
+	}
+};
+
 struct M_Basis {
 	M_Vector3 rows[3];
 
@@ -339,6 +455,28 @@ struct M_Basis {
 			M_Vector3::convert_from(p_from.rows[0]),
 			M_Vector3::convert_from(p_from.rows[1]),
 			M_Vector3::convert_from(p_from.rows[2])
+		};
+		return ret;
+	}
+};
+
+struct M_Projection {
+	M_Vector4 matrix[4];
+
+	static _FORCE_INLINE_ Projection convert_to(const M_Projection &p_from) {
+		return Projection(M_Vector4::convert_to(p_from.matrix[0]),
+				M_Vector4::convert_to(p_from.matrix[1]),
+				M_Vector4::convert_to(p_from.matrix[2]),
+				M_Vector4::convert_to(p_from.matrix[3])
+		);
+	}
+
+	static _FORCE_INLINE_ M_Projection convert_from(const Projection &p_from) {
+		M_Projection ret = {
+			M_Vector4::convert_from(p_from.matrix[0]),
+			M_Vector4::convert_from(p_from.matrix[1]),
+			M_Vector4::convert_from(p_from.matrix[2]),
+			M_Vector4::convert_from(p_from.matrix[3])
 		};
 		return ret;
 	}
@@ -449,13 +587,19 @@ struct M_Plane {
 		return marshalled_out_##m_type##_impl<InteropLayout::MATCHES_##m_type>(p_from); \
 	}
 
-DECL_TYPE_MARSHAL_TEMPLATES(Vector2)
 DECL_TYPE_MARSHAL_TEMPLATES(Rect2)
+DECL_TYPE_MARSHAL_TEMPLATES(Rect2i)
 DECL_TYPE_MARSHAL_TEMPLATES(Transform2D)
+DECL_TYPE_MARSHAL_TEMPLATES(Vector2)
+DECL_TYPE_MARSHAL_TEMPLATES(Vector2i)
 DECL_TYPE_MARSHAL_TEMPLATES(Vector3)
+DECL_TYPE_MARSHAL_TEMPLATES(Vector3i)
+DECL_TYPE_MARSHAL_TEMPLATES(Vector4)
+DECL_TYPE_MARSHAL_TEMPLATES(Vector4i)
 DECL_TYPE_MARSHAL_TEMPLATES(Basis)
 DECL_TYPE_MARSHAL_TEMPLATES(Quaternion)
 DECL_TYPE_MARSHAL_TEMPLATES(Transform)
+DECL_TYPE_MARSHAL_TEMPLATES(Projection)
 DECL_TYPE_MARSHAL_TEMPLATES(AABB)
 DECL_TYPE_MARSHAL_TEMPLATES(Color)
 DECL_TYPE_MARSHAL_TEMPLATES(Plane)

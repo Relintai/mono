@@ -72,17 +72,24 @@ struct CachedData {
 	MonoClass *rawclass_Dictionary;
 	// -----------------------------------------------
 
-	GDMonoClass *class_Vector2;
 	GDMonoClass *class_Rect2;
+	GDMonoClass *class_Rect2i;
 	GDMonoClass *class_Transform2D;
+	GDMonoClass *class_Vector2;
+	GDMonoClass *class_Vector2i;
 	GDMonoClass *class_Vector3;
+	GDMonoClass *class_Vector3i;
+	GDMonoClass *class_Vector4;
+	GDMonoClass *class_Vector4i;
 	GDMonoClass *class_Basis;
 	GDMonoClass *class_Quaternion;
 	GDMonoClass *class_Transform;
+	GDMonoClass *class_Projection;
 	GDMonoClass *class_AABB;
 	GDMonoClass *class_Color;
 	GDMonoClass *class_Plane;
 	GDMonoClass *class_NodePath;
+	GDMonoClass *class_StringName;
 	GDMonoClass *class_RID;
 	GDMonoClass *class_GodotObject;
 	GDMonoClass *class_GodotResource;
@@ -118,6 +125,7 @@ struct CachedData {
 
 	GDMonoField *field_GodotObject_ptr;
 	GDMonoField *field_NodePath_ptr;
+	GDMonoField *field_StringName_ptr;
 	GDMonoField *field_Image_ptr;
 	GDMonoField *field_RID_ptr;
 

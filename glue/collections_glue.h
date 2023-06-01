@@ -33,7 +33,7 @@
 
 #ifdef MONO_GLUE_ENABLED
 
-#include "core/array.h"
+#include "core/variant/array.h"
 
 #include "../mono_gd/gd_mono_marshal.h"
 

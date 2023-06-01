@@ -34,7 +34,7 @@
 #ifdef MONO_GLUE_ENABLED
 
 #include "core/object/object.h"
-#include "core/rid.h"
+#include "core/containers/rid.h"
 
 #include "../mono_gd/gd_mono_marshal.h"
 

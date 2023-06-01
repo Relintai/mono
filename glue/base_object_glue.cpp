@@ -33,7 +33,7 @@
 #ifdef MONO_GLUE_ENABLED
 
 #include "core/object/reference.h"
-#include "core/string_name.h"
+#include "core/string/string_name.h"
 
 #include "../csharp_script.h"
 #include "../mono_gd/gd_mono_cache.h"

@@ -101,17 +101,24 @@ void CachedData::clear_godot_api_cache() {
 
 	rawclass_Dictionary = NULL;
 
-	class_Vector2 = NULL;
 	class_Rect2 = NULL;
+	class_Rect2i = NULL;
 	class_Transform2D = NULL;
+	class_Vector2 = NULL;
+	class_Vector2i = NULL;
 	class_Vector3 = NULL;
+	class_Vector3i = NULL;
+	class_Vector4 = NULL;
+	class_Vector4i = NULL;
 	class_Basis = NULL;
 	class_Quaternion = NULL;
 	class_Transform = NULL;
+	class_Projection = NULL;
 	class_AABB = NULL;
 	class_Color = NULL;
 	class_Plane = NULL;
 	class_NodePath = NULL;
+	class_StringName = NULL;
 	class_RID = NULL;
 	class_GodotObject = NULL;
 	class_GodotResource = NULL;
@@ -147,6 +154,7 @@ void CachedData::clear_godot_api_cache() {
 
 	field_GodotObject_ptr = NULL;
 	field_NodePath_ptr = NULL;
+	field_StringName_ptr = NULL;
 	field_Image_ptr = NULL;
 	field_RID_ptr = NULL;
 
@@ -217,17 +225,24 @@ void update_corlib_cache() {
 }
 
 void update_godot_api_cache() {
-	CACHE_CLASS_AND_CHECK(Vector2, GODOT_API_CLASS(Vector2));
 	CACHE_CLASS_AND_CHECK(Rect2, GODOT_API_CLASS(Rect2));
+	CACHE_CLASS_AND_CHECK(Rect2i, GODOT_API_CLASS(Rect2i));
 	CACHE_CLASS_AND_CHECK(Transform2D, GODOT_API_CLASS(Transform2D));
+	CACHE_CLASS_AND_CHECK(Vector2, GODOT_API_CLASS(Vector2));
+	CACHE_CLASS_AND_CHECK(Vector2i, GODOT_API_CLASS(Vector2i));
 	CACHE_CLASS_AND_CHECK(Vector3, GODOT_API_CLASS(Vector3));
+	CACHE_CLASS_AND_CHECK(Vector3i, GODOT_API_CLASS(Vector3i));
+	CACHE_CLASS_AND_CHECK(Vector4, GODOT_API_CLASS(Vector4i));
+	CACHE_CLASS_AND_CHECK(Vector4i, GODOT_API_CLASS(Vector4i));
 	CACHE_CLASS_AND_CHECK(Basis, GODOT_API_CLASS(Basis));
 	CACHE_CLASS_AND_CHECK(Quaternion, GODOT_API_CLASS(Quaternion));
 	CACHE_CLASS_AND_CHECK(Transform, GODOT_API_CLASS(Transform));
+	CACHE_CLASS_AND_CHECK(Projection, GODOT_API_CLASS(Projection));
 	CACHE_CLASS_AND_CHECK(AABB, GODOT_API_CLASS(AABB));
 	CACHE_CLASS_AND_CHECK(Color, GODOT_API_CLASS(Color));
 	CACHE_CLASS_AND_CHECK(Plane, GODOT_API_CLASS(Plane));
 	CACHE_CLASS_AND_CHECK(NodePath, GODOT_API_CLASS(NodePath));
+	CACHE_CLASS_AND_CHECK(StringName, GODOT_API_CLASS(StringName));
 	CACHE_CLASS_AND_CHECK(RID, GODOT_API_CLASS(RID));
 	CACHE_CLASS_AND_CHECK(GodotObject, GODOT_API_CLASS(Object));
 	CACHE_CLASS_AND_CHECK(GodotResource, GODOT_API_CLASS(Resource));
@@ -263,6 +278,7 @@ void update_godot_api_cache() {
 
 	CACHE_FIELD_AND_CHECK(GodotObject, ptr, CACHED_CLASS(GodotObject)->get_field(BINDINGS_PTR_FIELD));
 	CACHE_FIELD_AND_CHECK(NodePath, ptr, CACHED_CLASS(NodePath)->get_field(BINDINGS_PTR_FIELD));
+	CACHE_FIELD_AND_CHECK(StringName, ptr, CACHED_CLASS(StringName)->get_field(BINDINGS_PTR_FIELD));
 	CACHE_FIELD_AND_CHECK(RID, ptr, CACHED_CLASS(RID)->get_field(BINDINGS_PTR_FIELD));
 
 	CACHE_METHOD_THUNK_AND_CHECK(GodotObject, Dispose, CACHED_CLASS(GodotObject)->get_method("Dispose", 0));

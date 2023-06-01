@@ -71,80 +71,147 @@ Variant::Type managed_to_variant_type(const ManagedType &p_type) {
 		case MONO_TYPE_VALUETYPE: {
 			GDMonoClass *vtclass = p_type.type_class;
 
-			if (vtclass == CACHED_CLASS(Vector2))
+			if (vtclass == CACHED_CLASS(Vector2)) {
 				return Variant::VECTOR2;
+			}
 
-			if (vtclass == CACHED_CLASS(Rect2))
+			if (vtclass == CACHED_CLASS(Vector2i)) {
+				return Variant::VECTOR2I;
+			}
+
+			if (vtclass == CACHED_CLASS(Rect2)) {
 				return Variant::RECT2;
+			}
 
-			if (vtclass == CACHED_CLASS(Transform2D))
+			if (vtclass == CACHED_CLASS(Rect2i)) {
+				return Variant::RECT2I;
+			}
+
+			if (vtclass == CACHED_CLASS(Transform2D)) {
 				return Variant::TRANSFORM2D;
+			}
 
-			if (vtclass == CACHED_CLASS(Vector3))
+			if (vtclass == CACHED_CLASS(Vector3)) {
 				return Variant::VECTOR3;
+			}
 
-			if (vtclass == CACHED_CLASS(Basis))
+			if (vtclass == CACHED_CLASS(Vector3i)) {
+				return Variant::VECTOR3I;
+			}
+
+			if (vtclass == CACHED_CLASS(Vector4)) {
+				return Variant::VECTOR4;
+			}
+
+			if (vtclass == CACHED_CLASS(Vector4i)) {
+				return Variant::VECTOR4I;
+			}
+
+			if (vtclass == CACHED_CLASS(Basis)) {
 				return Variant::BASIS;
+			}
 
-			if (vtclass == CACHED_CLASS(Quaternion))
+			if (vtclass == CACHED_CLASS(Quaternion)) {
 				return Variant::QUATERNION;
+			}
 
-			if (vtclass == CACHED_CLASS(Transform))
+			if (vtclass == CACHED_CLASS(Transform)) {
 				return Variant::TRANSFORM;
+			}
 
-			if (vtclass == CACHED_CLASS(AABB))
+			if (vtclass == CACHED_CLASS(Projection)) {
+				return Variant::PROJECTION;
+			}
+
+			if (vtclass == CACHED_CLASS(AABB)) {
 				return Variant::AABB;
+			}
 
-			if (vtclass == CACHED_CLASS(Color))
+			if (vtclass == CACHED_CLASS(Color)) {
 				return Variant::COLOR;
+			}
 
-			if (vtclass == CACHED_CLASS(Plane))
+			if (vtclass == CACHED_CLASS(Plane)) {
 				return Variant::PLANE;
+			}
 
-			if (mono_class_is_enum(vtclass->get_mono_ptr()))
+			if (mono_class_is_enum(vtclass->get_mono_ptr())) {
 				return Variant::INT;
+			}
 		} break;
 
 		case MONO_TYPE_ARRAY:
 		case MONO_TYPE_SZARRAY: {
 			MonoClass *elem_class = mono_class_get_element_class(p_type.type_class->get_mono_ptr());
 
-			if (elem_class == CACHED_CLASS_RAW(MonoObject))
+			if (elem_class == CACHED_CLASS_RAW(MonoObject)) {
 				return Variant::ARRAY;
+			}
 
-			if (elem_class == CACHED_CLASS_RAW(uint8_t))
+			if (elem_class == CACHED_CLASS_RAW(uint8_t)) {
 				return Variant::POOL_BYTE_ARRAY;
+			}
 
-			if (elem_class == CACHED_CLASS_RAW(int32_t))
+			if (elem_class == CACHED_CLASS_RAW(int32_t)) {
 				return Variant::POOL_INT_ARRAY;
+			}
 
-			if (elem_class == REAL_T_MONOCLASS)
+			if (elem_class == REAL_T_MONOCLASS) {
 				return Variant::POOL_REAL_ARRAY;
+			}
 
-			if (elem_class == CACHED_CLASS_RAW(String))
+			if (elem_class == CACHED_CLASS_RAW(String)) {
 				return Variant::POOL_STRING_ARRAY;
+			}
 
-			if (elem_class == CACHED_CLASS_RAW(Vector2))
+			if (elem_class == CACHED_CLASS_RAW(Vector2)) {
 				return Variant::POOL_VECTOR2_ARRAY;
+			}
 
-			if (elem_class == CACHED_CLASS_RAW(Vector3))
+			if (elem_class == CACHED_CLASS_RAW(Vector2i)) {
+				return Variant::POOL_VECTOR2I_ARRAY;
+			}
+
+			if (elem_class == CACHED_CLASS_RAW(Vector3)) {
 				return Variant::POOL_VECTOR3_ARRAY;
+			}
 
-			if (elem_class == CACHED_CLASS_RAW(Color))
+			if (elem_class == CACHED_CLASS_RAW(Vector3i)) {
+				return Variant::POOL_VECTOR3I_ARRAY;
+			}
+
+			if (elem_class == CACHED_CLASS_RAW(Vector4)) {
+				return Variant::POOL_VECTOR4_ARRAY;
+			}
+
+			if (elem_class == CACHED_CLASS_RAW(Vector4i)) {
+				return Variant::POOL_VECTOR4I_ARRAY;
+			}
+
+			if (elem_class == CACHED_CLASS_RAW(Color)) {
 				return Variant::POOL_COLOR_ARRAY;
+			}
 
-			if (elem_class == CACHED_CLASS_RAW(NodePath))
+			if (elem_class == CACHED_CLASS_RAW(NodePath)) {
 				return Variant::ARRAY;
+			}
 
-			if (elem_class == CACHED_CLASS_RAW(RID))
+			if (elem_class == CACHED_CLASS_RAW(StringName)) {
 				return Variant::ARRAY;
+			}
 
-			if (mono_class_is_enum(elem_class))
+			if (elem_class == CACHED_CLASS_RAW(RID)) {
 				return Variant::ARRAY;
+			}
+
+			if (mono_class_is_enum(elem_class)) {
+				return Variant::ARRAY;
+			}
 
 			GDMonoClass *array_type_class = GDMono::get_singleton()->get_class(elem_class);
-			if (CACHED_CLASS(GodotObject)->is_assignable_from(array_type_class))
+			if (CACHED_CLASS(GodotObject)->is_assignable_from(array_type_class)) {
 				return Variant::ARRAY;
+			}
 		} break;
 
 		case MONO_TYPE_CLASS: {
@@ -157,6 +224,10 @@ Variant::Type managed_to_variant_type(const ManagedType &p_type) {
 
 			if (CACHED_CLASS(NodePath) == type_class) {
 				return Variant::NODE_PATH;
+			}
+
+			if (CACHED_CLASS(StringName) == type_class) {
+				return Variant::STRING_NAME;
 			}
 
 			if (CACHED_CLASS(RID) == type_class) {
@@ -307,8 +378,9 @@ String mono_to_utf16_string(MonoString *p_mono_string) {
 	int len = mono_string_length(p_mono_string);
 	String ret;
 
-	if (len == 0)
+	if (len == 0) {
 		return ret;
+	}
 
 	ret.resize(len + 1);
 	ret.set(len, 0);
@@ -357,8 +429,24 @@ MonoArray *variant_to_mono_array(const Variant &p_var, GDMonoClass *p_type_class
 		return PoolVector2Array_to_mono_array(p_var.operator PoolVector2Array());
 	}
 
+	if (array_type->eklass == CACHED_CLASS_RAW(Vector2i)) {
+		return PoolVector2iArray_to_mono_array(p_var.operator PoolVector2iArray());
+	}
+
 	if (array_type->eklass == CACHED_CLASS_RAW(Vector3)) {
 		return PoolVector3Array_to_mono_array(p_var.operator PoolVector3Array());
+	}
+
+	if (array_type->eklass == CACHED_CLASS_RAW(Vector3i)) {
+		return PoolVector3iArray_to_mono_array(p_var.operator PoolVector3iArray());
+	}
+
+	if (array_type->eklass == CACHED_CLASS_RAW(Vector4)) {
+		return PoolVector4Array_to_mono_array(p_var.operator PoolVector4Array());
+	}
+
+	if (array_type->eklass == CACHED_CLASS_RAW(Vector4i)) {
+		return PoolVector4iArray_to_mono_array(p_var.operator PoolVector4iArray());
 	}
 
 	if (array_type->eklass == CACHED_CLASS_RAW(Color)) {
@@ -366,6 +454,10 @@ MonoArray *variant_to_mono_array(const Variant &p_var, GDMonoClass *p_type_class
 	}
 
 	if (array_type->eklass == CACHED_CLASS_RAW(NodePath)) {
+		return Array_to_mono_array(p_var.operator Array());
+	}
+
+	if (array_type->eklass == CACHED_CLASS_RAW(StringName)) {
 		return Array_to_mono_array(p_var.operator Array());
 	}
 
@@ -388,6 +480,10 @@ MonoObject *variant_to_mono_object_of_class(const Variant &p_var, GDMonoClass *p
 
 	if (CACHED_CLASS(NodePath) == p_type_class) {
 		return GDMonoUtils::create_managed_from(p_var.operator NodePath());
+	}
+
+	if (CACHED_CLASS(StringName) == p_type_class) {
+		return GDMonoUtils::create_managed_from(p_var.operator StringName());
 	}
 
 	if (CACHED_CLASS(RID) == p_type_class) {
@@ -494,9 +590,29 @@ MonoObject *variant_to_mono_object(const Variant &p_var) {
 			GDMonoMarshal::M_Rect2 from = MARSHALLED_OUT(Rect2, p_var.operator ::Rect2());
 			return mono_value_box(mono_domain_get(), CACHED_CLASS_RAW(Rect2), &from);
 		}
+		case Variant::VECTOR2I: {
+			GDMonoMarshal::M_Vector2i from = MARSHALLED_OUT(Vector2i, p_var.operator ::Vector2i());
+			return mono_value_box(mono_domain_get(), CACHED_CLASS_RAW(Vector2i), &from);
+		}
+		case Variant::RECT2I: {
+			GDMonoMarshal::M_Rect2i from = MARSHALLED_OUT(Rect2i, p_var.operator ::Rect2i());
+			return mono_value_box(mono_domain_get(), CACHED_CLASS_RAW(Rect2i), &from);
+		}
 		case Variant::VECTOR3: {
 			GDMonoMarshal::M_Vector3 from = MARSHALLED_OUT(Vector3, p_var.operator ::Vector3());
 			return mono_value_box(mono_domain_get(), CACHED_CLASS_RAW(Vector3), &from);
+		}
+		case Variant::VECTOR3I: {
+			GDMonoMarshal::M_Vector3i from = MARSHALLED_OUT(Vector3i, p_var.operator ::Vector3i());
+			return mono_value_box(mono_domain_get(), CACHED_CLASS_RAW(Vector3i), &from);
+		}
+		case Variant::VECTOR4: {
+			GDMonoMarshal::M_Vector4 from = MARSHALLED_OUT(Vector4, p_var.operator ::Vector4());
+			return mono_value_box(mono_domain_get(), CACHED_CLASS_RAW(Vector4), &from);
+		}
+		case Variant::VECTOR4I: {
+			GDMonoMarshal::M_Vector4i from = MARSHALLED_OUT(Vector4i, p_var.operator ::Vector4i());
+			return mono_value_box(mono_domain_get(), CACHED_CLASS_RAW(Vector4i), &from);
 		}
 		case Variant::TRANSFORM2D: {
 			GDMonoMarshal::M_Transform2D from = MARSHALLED_OUT(Transform2D, p_var.operator ::Transform2D());
@@ -522,12 +638,18 @@ MonoObject *variant_to_mono_object(const Variant &p_var) {
 			GDMonoMarshal::M_Transform from = MARSHALLED_OUT(Transform, p_var.operator ::Transform());
 			return mono_value_box(mono_domain_get(), CACHED_CLASS_RAW(Transform), &from);
 		}
+		case Variant::PROJECTION: {
+			GDMonoMarshal::M_Projection from = MARSHALLED_OUT(Projection, p_var.operator ::Projection());
+			return mono_value_box(mono_domain_get(), CACHED_CLASS_RAW(Projection), &from);
+		}
 		case Variant::COLOR: {
 			GDMonoMarshal::M_Color from = MARSHALLED_OUT(Color, p_var.operator ::Color());
 			return mono_value_box(mono_domain_get(), CACHED_CLASS_RAW(Color), &from);
 		}
 		case Variant::NODE_PATH:
 			return GDMonoUtils::create_managed_from(p_var.operator NodePath());
+		case Variant::STRING_NAME:
+			return GDMonoUtils::create_managed_from(p_var.operator StringName());
 		case Variant::RID:
 			return GDMonoUtils::create_managed_from(p_var.operator ::RID());
 		case Variant::OBJECT:
@@ -546,8 +668,16 @@ MonoObject *variant_to_mono_object(const Variant &p_var) {
 			return (MonoObject *)PoolStringArray_to_mono_array(p_var.operator PoolStringArray());
 		case Variant::POOL_VECTOR2_ARRAY:
 			return (MonoObject *)PoolVector2Array_to_mono_array(p_var.operator PoolVector2Array());
+		case Variant::POOL_VECTOR2I_ARRAY:
+			return (MonoObject *)PoolVector2iArray_to_mono_array(p_var.operator PoolVector2iArray());
 		case Variant::POOL_VECTOR3_ARRAY:
 			return (MonoObject *)PoolVector3Array_to_mono_array(p_var.operator PoolVector3Array());
+		case Variant::POOL_VECTOR3I_ARRAY:
+			return (MonoObject *)PoolVector3iArray_to_mono_array(p_var.operator PoolVector3iArray());
+		case Variant::POOL_VECTOR4_ARRAY:
+			return (MonoObject *)PoolVector4Array_to_mono_array(p_var.operator PoolVector4Array());
+		case Variant::POOL_VECTOR4I_ARRAY:
+			return (MonoObject *)PoolVector4iArray_to_mono_array(p_var.operator PoolVector4iArray());
 		case Variant::POOL_COLOR_ARRAY:
 			return (MonoObject *)PoolColorArray_to_mono_array(p_var.operator PoolColorArray());
 		default:
@@ -597,11 +727,17 @@ size_t variant_get_managed_unboxed_size(const ManagedType &p_type) {
 
 			RETURN_CHECK_FOR_STRUCT(Vector2);
 			RETURN_CHECK_FOR_STRUCT(Rect2);
+			RETURN_CHECK_FOR_STRUCT(Vector2i);
+			RETURN_CHECK_FOR_STRUCT(Rect2i);
 			RETURN_CHECK_FOR_STRUCT(Transform2D);
 			RETURN_CHECK_FOR_STRUCT(Vector3);
+			RETURN_CHECK_FOR_STRUCT(Vector3i);
+			RETURN_CHECK_FOR_STRUCT(Vector4);
+			RETURN_CHECK_FOR_STRUCT(Vector4i);
 			RETURN_CHECK_FOR_STRUCT(Basis);
 			RETURN_CHECK_FOR_STRUCT(Quaternion);
 			RETURN_CHECK_FOR_STRUCT(Transform);
+			RETURN_CHECK_FOR_STRUCT(Projection);
 			RETURN_CHECK_FOR_STRUCT(AABB);
 			RETURN_CHECK_FOR_STRUCT(Color);
 			RETURN_CHECK_FOR_STRUCT(Plane);
@@ -697,11 +833,17 @@ void *variant_to_managed_unboxed(const Variant &p_var, const ManagedType &p_type
 
 			RETURN_CHECK_FOR_STRUCT(Vector2);
 			RETURN_CHECK_FOR_STRUCT(Rect2);
+			RETURN_CHECK_FOR_STRUCT(Vector2i);
+			RETURN_CHECK_FOR_STRUCT(Rect2i);
 			RETURN_CHECK_FOR_STRUCT(Transform2D);
 			RETURN_CHECK_FOR_STRUCT(Vector3);
+			RETURN_CHECK_FOR_STRUCT(Vector3i);
+			RETURN_CHECK_FOR_STRUCT(Vector4);
+			RETURN_CHECK_FOR_STRUCT(Vector4i);
 			RETURN_CHECK_FOR_STRUCT(Basis);
 			RETURN_CHECK_FOR_STRUCT(Quaternion);
 			RETURN_CHECK_FOR_STRUCT(Transform);
+			RETURN_CHECK_FOR_STRUCT(Projection);
 			RETURN_CHECK_FOR_STRUCT(AABB);
 			RETURN_CHECK_FOR_STRUCT(Color);
 			RETURN_CHECK_FOR_STRUCT(Plane);
@@ -837,11 +979,17 @@ MonoObject *variant_to_mono_object(const Variant &p_var, const ManagedType &p_ty
 
 			RETURN_CHECK_FOR_STRUCT(Vector2);
 			RETURN_CHECK_FOR_STRUCT(Rect2);
+			RETURN_CHECK_FOR_STRUCT(Vector2i);
+			RETURN_CHECK_FOR_STRUCT(Rect2i);
 			RETURN_CHECK_FOR_STRUCT(Transform2D);
 			RETURN_CHECK_FOR_STRUCT(Vector3);
+			RETURN_CHECK_FOR_STRUCT(Vector3i);
+			RETURN_CHECK_FOR_STRUCT(Vector4);
+			RETURN_CHECK_FOR_STRUCT(Vector4i);
 			RETURN_CHECK_FOR_STRUCT(Basis);
 			RETURN_CHECK_FOR_STRUCT(Quaternion);
 			RETURN_CHECK_FOR_STRUCT(Transform);
+			RETURN_CHECK_FOR_STRUCT(Projection);
 			RETURN_CHECK_FOR_STRUCT(AABB);
 			RETURN_CHECK_FOR_STRUCT(Color);
 			RETURN_CHECK_FOR_STRUCT(Plane);
@@ -951,38 +1099,73 @@ Variant mono_object_to_variant_impl(MonoObject *p_obj, const ManagedType &p_type
 		case MONO_TYPE_VALUETYPE: {
 			GDMonoClass *vtclass = p_type.type_class;
 
-			if (vtclass == CACHED_CLASS(Vector2))
+			if (vtclass == CACHED_CLASS(Vector2)) {
 				return MARSHALLED_IN(Vector2, unbox_addr<GDMonoMarshal::M_Vector2>(p_obj));
+			}
 
-			if (vtclass == CACHED_CLASS(Rect2))
+			if (vtclass == CACHED_CLASS(Rect2)) {
 				return MARSHALLED_IN(Rect2, unbox_addr<GDMonoMarshal::M_Rect2>(p_obj));
+			}
 
-			if (vtclass == CACHED_CLASS(Transform2D))
+			if (vtclass == CACHED_CLASS(Vector2i)) {
+				return MARSHALLED_IN(Vector2i, unbox_addr<GDMonoMarshal::M_Vector2i>(p_obj));
+			}
+
+			if (vtclass == CACHED_CLASS(Rect2i)) {
+				return MARSHALLED_IN(Rect2i, unbox_addr<GDMonoMarshal::M_Rect2i>(p_obj));
+			}
+
+			if (vtclass == CACHED_CLASS(Transform2D)) {
 				return MARSHALLED_IN(Transform2D, unbox_addr<GDMonoMarshal::M_Transform2D>(p_obj));
+			}
 
-			if (vtclass == CACHED_CLASS(Vector3))
+			if (vtclass == CACHED_CLASS(Vector3)) {
 				return MARSHALLED_IN(Vector3, unbox_addr<GDMonoMarshal::M_Vector3>(p_obj));
+			}
 
-			if (vtclass == CACHED_CLASS(Basis))
+			if (vtclass == CACHED_CLASS(Vector3i)) {
+				return MARSHALLED_IN(Vector3i, unbox_addr<GDMonoMarshal::M_Vector3i>(p_obj));
+			}
+
+			if (vtclass == CACHED_CLASS(Vector4)) {
+				return MARSHALLED_IN(Vector4, unbox_addr<GDMonoMarshal::M_Vector4>(p_obj));
+			}
+
+			if (vtclass == CACHED_CLASS(Vector4i)) {
+				return MARSHALLED_IN(Vector4i, unbox_addr<GDMonoMarshal::M_Vector4i>(p_obj));
+			}
+
+			if (vtclass == CACHED_CLASS(Basis)) {
 				return MARSHALLED_IN(Basis, unbox_addr<GDMonoMarshal::M_Basis>(p_obj));
+			}
 
-			if (vtclass == CACHED_CLASS(Quaternion))
+			if (vtclass == CACHED_CLASS(Quaternion)) {
 				return MARSHALLED_IN(Quaternion, unbox_addr<GDMonoMarshal::M_Quaternion>(p_obj));
+			}
 
-			if (vtclass == CACHED_CLASS(Transform))
+			if (vtclass == CACHED_CLASS(Transform)) {
 				return MARSHALLED_IN(Transform, unbox_addr<GDMonoMarshal::M_Transform>(p_obj));
+			}
 
-			if (vtclass == CACHED_CLASS(AABB))
+			if (vtclass == CACHED_CLASS(Projection)) {
+				return MARSHALLED_IN(Projection, unbox_addr<GDMonoMarshal::M_Projection>(p_obj));
+			}
+
+			if (vtclass == CACHED_CLASS(AABB)) {
 				return MARSHALLED_IN(AABB, unbox_addr<GDMonoMarshal::M_AABB>(p_obj));
+			}
 
-			if (vtclass == CACHED_CLASS(Color))
+			if (vtclass == CACHED_CLASS(Color)) {
 				return MARSHALLED_IN(Color, unbox_addr<GDMonoMarshal::M_Color>(p_obj));
+			}
 
-			if (vtclass == CACHED_CLASS(Plane))
+			if (vtclass == CACHED_CLASS(Plane)) {
 				return MARSHALLED_IN(Plane, unbox_addr<GDMonoMarshal::M_Plane>(p_obj));
+			}
 
-			if (mono_class_is_enum(vtclass->get_mono_ptr()))
+			if (mono_class_is_enum(vtclass->get_mono_ptr())) {
 				return unbox<int32_t>(p_obj);
+			}
 		} break;
 		case MONO_TYPE_STRING: {
 			if (p_obj == NULL) {
@@ -994,39 +1177,70 @@ Variant mono_object_to_variant_impl(MonoObject *p_obj, const ManagedType &p_type
 		case MONO_TYPE_SZARRAY: {
 			MonoArrayType *array_type = mono_type_get_array_type(p_type.type_class->get_mono_type());
 
-			if (array_type->eklass == CACHED_CLASS_RAW(MonoObject))
+			if (array_type->eklass == CACHED_CLASS_RAW(MonoObject)) {
 				return mono_array_to_Array((MonoArray *)p_obj);
+			}
 
-			if (array_type->eklass == CACHED_CLASS_RAW(uint8_t))
+			if (array_type->eklass == CACHED_CLASS_RAW(uint8_t)) {
 				return mono_array_to_PoolByteArray((MonoArray *)p_obj);
+			}
 
-			if (array_type->eklass == CACHED_CLASS_RAW(int32_t))
+			if (array_type->eklass == CACHED_CLASS_RAW(int32_t)) {
 				return mono_array_to_PoolIntArray((MonoArray *)p_obj);
+			}
 
-			if (array_type->eklass == REAL_T_MONOCLASS)
+			if (array_type->eklass == REAL_T_MONOCLASS) {
 				return mono_array_to_PoolRealArray((MonoArray *)p_obj);
+			}
 
-			if (array_type->eklass == CACHED_CLASS_RAW(String))
+			if (array_type->eklass == CACHED_CLASS_RAW(String)) {
 				return mono_array_to_PoolStringArray((MonoArray *)p_obj);
+			}
 
-			if (array_type->eklass == CACHED_CLASS_RAW(Vector2))
+			if (array_type->eklass == CACHED_CLASS_RAW(Vector2)) {
 				return mono_array_to_PoolVector2Array((MonoArray *)p_obj);
+			}
 
-			if (array_type->eklass == CACHED_CLASS_RAW(Vector3))
+			if (array_type->eklass == CACHED_CLASS_RAW(Vector2i)) {
+				return mono_array_to_PoolVector2iArray((MonoArray *)p_obj);
+			}
+
+			if (array_type->eklass == CACHED_CLASS_RAW(Vector3)) {
 				return mono_array_to_PoolVector3Array((MonoArray *)p_obj);
+			}
 
-			if (array_type->eklass == CACHED_CLASS_RAW(Color))
+			if (array_type->eklass == CACHED_CLASS_RAW(Vector3i)) {
+				return mono_array_to_PoolVector3iArray((MonoArray *)p_obj);
+			}
+
+			if (array_type->eklass == CACHED_CLASS_RAW(Vector4)) {
+				return mono_array_to_PoolVector4Array((MonoArray *)p_obj);
+			}
+
+			if (array_type->eklass == CACHED_CLASS_RAW(Vector4i)) {
+				return mono_array_to_PoolVector4iArray((MonoArray *)p_obj);
+			}
+
+			if (array_type->eklass == CACHED_CLASS_RAW(Color)) {
 				return mono_array_to_PoolColorArray((MonoArray *)p_obj);
+			}
 
-			if (array_type->eklass == CACHED_CLASS_RAW(NodePath))
+			if (array_type->eklass == CACHED_CLASS_RAW(NodePath)) {
 				return mono_array_to_Array((MonoArray *)p_obj);
+			}
 
-			if (array_type->eklass == CACHED_CLASS_RAW(RID))
+			if (array_type->eklass == CACHED_CLASS_RAW(StringName)) {
 				return mono_array_to_Array((MonoArray *)p_obj);
+			}
+
+			if (array_type->eklass == CACHED_CLASS_RAW(RID)) {
+				return mono_array_to_Array((MonoArray *)p_obj);
+			}
 
 			GDMonoClass *array_type_class = GDMono::get_singleton()->get_class(array_type->eklass);
-			if (CACHED_CLASS(GodotObject)->is_assignable_from(array_type_class))
+			if (CACHED_CLASS(GodotObject)->is_assignable_from(array_type_class)) {
 				return mono_array_to_Array((MonoArray *)p_obj);
+			}
 
 			if (p_fail_with_err) {
 				ERR_FAIL_V_MSG(Variant(), "Attempted to convert a managed array of unmarshallable element type to Variant.");
@@ -1049,6 +1263,11 @@ Variant mono_object_to_variant_impl(MonoObject *p_obj, const ManagedType &p_type
 
 			if (CACHED_CLASS(NodePath) == type_class) {
 				NodePath *ptr = unbox<NodePath *>(CACHED_FIELD(NodePath, ptr)->get_value(p_obj));
+				return ptr ? Variant(*ptr) : Variant();
+			}
+
+			if (CACHED_CLASS(StringName) == type_class) {
+				StringName *ptr = unbox<StringName *>(CACHED_FIELD(StringName, ptr)->get_value(p_obj));
 				return ptr ? Variant(*ptr) : Variant();
 			}
 
@@ -1128,8 +1347,9 @@ Variant mono_object_to_variant_impl(MonoObject *p_obj, const ManagedType &p_type
 }
 
 Variant mono_object_to_variant(MonoObject *p_obj) {
-	if (!p_obj)
+	if (!p_obj) {
 		return Variant();
+	}
 
 	ManagedType type = ManagedType::from_class(mono_object_get_class(p_obj));
 
@@ -1137,15 +1357,17 @@ Variant mono_object_to_variant(MonoObject *p_obj) {
 }
 
 Variant mono_object_to_variant(MonoObject *p_obj, const ManagedType &p_type) {
-	if (!p_obj)
+	if (!p_obj) {
 		return Variant();
+	}
 
 	return mono_object_to_variant_impl(p_obj, p_type);
 }
 
 Variant mono_object_to_variant_no_err(MonoObject *p_obj, const ManagedType &p_type) {
-	if (!p_obj)
+	if (!p_obj) {
 		return Variant();
+	}
 
 	return mono_object_to_variant_impl(p_obj, p_type, /* fail_with_err: */ false);
 }
@@ -1164,8 +1386,9 @@ String mono_object_to_variant_string(MonoObject *p_obj, MonoException **r_exc) {
 		MonoString *mono_str = GDMonoUtils::object_to_string(p_obj, &exc);
 
 		if (exc) {
-			if (r_exc)
+			if (r_exc) {
 				*r_exc = exc;
+			}
 			return String();
 		}
 
@@ -1285,8 +1508,9 @@ MonoArray *Array_to_mono_array(const Array &p_array, MonoClass *p_array_type_cla
 
 Array mono_array_to_Array(MonoArray *p_array) {
 	Array ret;
-	if (!p_array)
+	if (!p_array) {
 		return ret;
+	}
 	int length = mono_array_length(p_array);
 	ret.resize(length);
 
@@ -1314,8 +1538,9 @@ MonoArray *PoolIntArray_to_mono_array(const PoolIntArray &p_array) {
 
 PoolIntArray mono_array_to_PoolIntArray(MonoArray *p_array) {
 	PoolIntArray ret;
-	if (!p_array)
+	if (!p_array) {
 		return ret;
+	}
 	int length = mono_array_length(p_array);
 	ret.resize(length);
 	PoolIntArray::Write w = ret.write();
@@ -1341,8 +1566,9 @@ MonoArray *PoolByteArray_to_mono_array(const PoolByteArray &p_array) {
 
 PoolByteArray mono_array_to_PoolByteArray(MonoArray *p_array) {
 	PoolByteArray ret;
-	if (!p_array)
+	if (!p_array) {
 		return ret;
+	}
 	int length = mono_array_length(p_array);
 	ret.resize(length);
 	PoolByteArray::Write w = ret.write();
@@ -1368,8 +1594,9 @@ MonoArray *PoolRealArray_to_mono_array(const PoolRealArray &p_array) {
 
 PoolRealArray mono_array_to_PoolRealArray(MonoArray *p_array) {
 	PoolRealArray ret;
-	if (!p_array)
+	if (!p_array) {
 		return ret;
+	}
 	int length = mono_array_length(p_array);
 	ret.resize(length);
 	PoolRealArray::Write w = ret.write();
@@ -1396,8 +1623,9 @@ MonoArray *PoolStringArray_to_mono_array(const PoolStringArray &p_array) {
 
 PoolStringArray mono_array_to_PoolStringArray(MonoArray *p_array) {
 	PoolStringArray ret;
-	if (!p_array)
+	if (!p_array) {
 		return ret;
+	}
 	int length = mono_array_length(p_array);
 	ret.resize(length);
 	PoolStringArray::Write w = ret.write();
@@ -1425,8 +1653,9 @@ MonoArray *PoolColorArray_to_mono_array(const PoolColorArray &p_array) {
 
 PoolColorArray mono_array_to_PoolColorArray(MonoArray *p_array) {
 	PoolColorArray ret;
-	if (!p_array)
+	if (!p_array) {
 		return ret;
+	}
 	int length = mono_array_length(p_array);
 	ret.resize(length);
 	PoolColorArray::Write w = ret.write();
@@ -1453,14 +1682,44 @@ MonoArray *PoolVector2Array_to_mono_array(const PoolVector2Array &p_array) {
 
 PoolVector2Array mono_array_to_PoolVector2Array(MonoArray *p_array) {
 	PoolVector2Array ret;
-	if (!p_array)
+	if (!p_array) {
 		return ret;
+	}
 	int length = mono_array_length(p_array);
 	ret.resize(length);
 	PoolVector2Array::Write w = ret.write();
 
 	for (int i = 0; i < length; i++) {
 		w[i] = MARSHALLED_IN(Vector2, (M_Vector2 *)mono_array_addr_with_size(p_array, sizeof(M_Vector2), i));
+	}
+
+	return ret;
+}
+
+MonoArray *PoolVector2iArray_to_mono_array(const PoolVector2iArray &p_array) {
+	PoolVector2iArray::Read r = p_array.read();
+
+	MonoArray *ret = mono_array_new(mono_domain_get(), CACHED_CLASS_RAW(Vector2i), p_array.size());
+
+	for (int i = 0; i < p_array.size(); i++) {
+		M_Vector2i *raw = (M_Vector2i *)mono_array_addr_with_size(ret, sizeof(M_Vector2i), i);
+		*raw = MARSHALLED_OUT(Vector2i, r[i]);
+	}
+
+	return ret;
+}
+
+PoolVector2iArray mono_array_to_PoolVector2iArray(MonoArray *p_array) {
+	PoolVector2iArray ret;
+	if (!p_array) {
+		return ret;
+	}
+	int length = mono_array_length(p_array);
+	ret.resize(length);
+	PoolVector2iArray::Write w = ret.write();
+
+	for (int i = 0; i < length; i++) {
+		w[i] = MARSHALLED_IN(Vector2i, (M_Vector2i *)mono_array_addr_with_size(p_array, sizeof(M_Vector2i), i));
 	}
 
 	return ret;
@@ -1481,14 +1740,102 @@ MonoArray *PoolVector3Array_to_mono_array(const PoolVector3Array &p_array) {
 
 PoolVector3Array mono_array_to_PoolVector3Array(MonoArray *p_array) {
 	PoolVector3Array ret;
-	if (!p_array)
+	if (!p_array) {
 		return ret;
+	}
 	int length = mono_array_length(p_array);
 	ret.resize(length);
 	PoolVector3Array::Write w = ret.write();
 
 	for (int i = 0; i < length; i++) {
 		w[i] = MARSHALLED_IN(Vector3, (M_Vector3 *)mono_array_addr_with_size(p_array, sizeof(M_Vector3), i));
+	}
+
+	return ret;
+}
+
+MonoArray *PoolVector3iArray_to_mono_array(const PoolVector3iArray &p_array) {
+	PoolVector3iArray::Read r = p_array.read();
+
+	MonoArray *ret = mono_array_new(mono_domain_get(), CACHED_CLASS_RAW(Vector3i), p_array.size());
+
+	for (int i = 0; i < p_array.size(); i++) {
+		M_Vector3i *raw = (M_Vector3i *)mono_array_addr_with_size(ret, sizeof(M_Vector3i), i);
+		*raw = MARSHALLED_OUT(Vector3i, r[i]);
+	}
+
+	return ret;
+}
+
+PoolVector3iArray mono_array_to_PoolVector3iArray(MonoArray *p_array) {
+	PoolVector3iArray ret;
+	if (!p_array) {
+		return ret;
+	}
+	int length = mono_array_length(p_array);
+	ret.resize(length);
+	PoolVector3iArray::Write w = ret.write();
+
+	for (int i = 0; i < length; i++) {
+		w[i] = MARSHALLED_IN(Vector3i, (M_Vector3i *)mono_array_addr_with_size(p_array, sizeof(M_Vector3i), i));
+	}
+
+	return ret;
+}
+
+MonoArray *PoolVector4Array_to_mono_array(const PoolVector4Array &p_array) {
+	PoolVector4Array::Read r = p_array.read();
+
+	MonoArray *ret = mono_array_new(mono_domain_get(), CACHED_CLASS_RAW(Vector4), p_array.size());
+
+	for (int i = 0; i < p_array.size(); i++) {
+		M_Vector4 *raw = (M_Vector4 *)mono_array_addr_with_size(ret, sizeof(M_Vector4), i);
+		*raw = MARSHALLED_OUT(Vector4, r[i]);
+	}
+
+	return ret;
+}
+
+PoolVector4Array mono_array_to_PoolVector4Array(MonoArray *p_array) {
+	PoolVector4Array ret;
+	if (!p_array) {
+		return ret;
+	}
+	int length = mono_array_length(p_array);
+	ret.resize(length);
+	PoolVector4Array::Write w = ret.write();
+
+	for (int i = 0; i < length; i++) {
+		w[i] = MARSHALLED_IN(Vector4, (M_Vector4 *)mono_array_addr_with_size(p_array, sizeof(M_Vector4), i));
+	}
+
+	return ret;
+}
+
+MonoArray *PoolVector4iArray_to_mono_array(const PoolVector4iArray &p_array) {
+	PoolVector4iArray::Read r = p_array.read();
+
+	MonoArray *ret = mono_array_new(mono_domain_get(), CACHED_CLASS_RAW(Vector4i), p_array.size());
+
+	for (int i = 0; i < p_array.size(); i++) {
+		M_Vector4i *raw = (M_Vector4i *)mono_array_addr_with_size(ret, sizeof(M_Vector4i), i);
+		*raw = MARSHALLED_OUT(Vector4i, r[i]);
+	}
+
+	return ret;
+}
+
+PoolVector4iArray mono_array_to_PoolVector4iArray(MonoArray *p_array) {
+	PoolVector4iArray ret;
+	if (!p_array) {
+		return ret;
+	}
+	int length = mono_array_length(p_array);
+	ret.resize(length);
+	PoolVector4iArray::Write w = ret.write();
+
+	for (int i = 0; i < length; i++) {
+		w[i] = MARSHALLED_IN(Vector4i, (M_Vector4i *)mono_array_addr_with_size(p_array, sizeof(M_Vector4i), i));
 	}
 
 	return ret;

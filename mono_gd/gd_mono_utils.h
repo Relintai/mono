@@ -104,6 +104,7 @@ GDMonoClass *get_class_native_base(GDMonoClass *p_class);
 MonoObject *create_managed_for_godot_object(GDMonoClass *p_class, const StringName &p_native, Object *p_object);
 
 MonoObject *create_managed_from(const NodePath &p_from);
+MonoObject *create_managed_from(const StringName &p_from);
 MonoObject *create_managed_from(const RID &p_from);
 MonoObject *create_managed_from(const Array &p_from, GDMonoClass *p_class);
 MonoObject *create_managed_from(const Dictionary &p_from, GDMonoClass *p_class);
