@@ -278,8 +278,28 @@ void GDMonoField::set_value_from_variant(MonoObject *p_object, const Variant &p_
 					GDMonoMarshal::M_Rect2 from = MARSHALLED_OUT(Rect2, p_value.operator ::Rect2());
 					mono_field_set_value(p_object, mono_field, &from);
 				} break;
+				case Variant::VECTOR2I: {
+					GDMonoMarshal::M_Vector2i from = MARSHALLED_OUT(Vector2i, p_value.operator ::Vector2i());
+					mono_field_set_value(p_object, mono_field, &from);
+				} break;
+				case Variant::RECT2I: {
+					GDMonoMarshal::M_Rect2i from = MARSHALLED_OUT(Rect2i, p_value.operator ::Rect2i());
+					mono_field_set_value(p_object, mono_field, &from);
+				} break;
 				case Variant::VECTOR3: {
 					GDMonoMarshal::M_Vector3 from = MARSHALLED_OUT(Vector3, p_value.operator ::Vector3());
+					mono_field_set_value(p_object, mono_field, &from);
+				} break;
+				case Variant::VECTOR3I: {
+					GDMonoMarshal::M_Vector3i from = MARSHALLED_OUT(Vector3i, p_value.operator ::Vector3i());
+					mono_field_set_value(p_object, mono_field, &from);
+				} break;
+				case Variant::VECTOR4: {
+					GDMonoMarshal::M_Vector4 from = MARSHALLED_OUT(Vector4, p_value.operator ::Vector4());
+					mono_field_set_value(p_object, mono_field, &from);
+				} break;
+				case Variant::VECTOR4I: {
+					GDMonoMarshal::M_Vector4i from = MARSHALLED_OUT(Vector4i, p_value.operator ::Vector4i());
 					mono_field_set_value(p_object, mono_field, &from);
 				} break;
 				case Variant::TRANSFORM2D: {
@@ -306,12 +326,20 @@ void GDMonoField::set_value_from_variant(MonoObject *p_object, const Variant &p_
 					GDMonoMarshal::M_Transform from = MARSHALLED_OUT(Transform, p_value.operator ::Transform());
 					mono_field_set_value(p_object, mono_field, &from);
 				} break;
+				case Variant::PROJECTION: {
+					GDMonoMarshal::M_Projection from = MARSHALLED_OUT(Projection, p_value.operator ::Projection());
+					mono_field_set_value(p_object, mono_field, &from);
+				} break;
 				case Variant::COLOR: {
 					GDMonoMarshal::M_Color from = MARSHALLED_OUT(Color, p_value.operator ::Color());
 					mono_field_set_value(p_object, mono_field, &from);
 				} break;
 				case Variant::NODE_PATH: {
 					MonoObject *managed = GDMonoUtils::create_managed_from(p_value.operator NodePath());
+					mono_field_set_value(p_object, mono_field, managed);
+				} break;
+				case Variant::STRING_NAME: {
+					MonoObject *managed = GDMonoUtils::create_managed_from(p_value.operator StringName());
 					mono_field_set_value(p_object, mono_field, managed);
 				} break;
 				case Variant::RID: {
@@ -351,8 +379,24 @@ void GDMonoField::set_value_from_variant(MonoObject *p_object, const Variant &p_
 					MonoArray *managed = GDMonoMarshal::PoolVector2Array_to_mono_array(p_value.operator ::PoolVector2Array());
 					mono_field_set_value(p_object, mono_field, managed);
 				} break;
+				case Variant::POOL_VECTOR2I_ARRAY: {
+					MonoArray *managed = GDMonoMarshal::PoolVector2iArray_to_mono_array(p_value.operator ::PoolVector2iArray());
+					mono_field_set_value(p_object, mono_field, managed);
+				} break;
 				case Variant::POOL_VECTOR3_ARRAY: {
 					MonoArray *managed = GDMonoMarshal::PoolVector3Array_to_mono_array(p_value.operator ::PoolVector3Array());
+					mono_field_set_value(p_object, mono_field, managed);
+				} break;
+				case Variant::POOL_VECTOR3I_ARRAY: {
+					MonoArray *managed = GDMonoMarshal::PoolVector3iArray_to_mono_array(p_value.operator ::PoolVector3iArray());
+					mono_field_set_value(p_object, mono_field, managed);
+				} break;
+				case Variant::POOL_VECTOR4_ARRAY: {
+					MonoArray *managed = GDMonoMarshal::PoolVector4Array_to_mono_array(p_value.operator ::PoolVector4Array());
+					mono_field_set_value(p_object, mono_field, managed);
+				} break;
+				case Variant::POOL_VECTOR4I_ARRAY: {
+					MonoArray *managed = GDMonoMarshal::PoolVector4iArray_to_mono_array(p_value.operator ::PoolVector4iArray());
 					mono_field_set_value(p_object, mono_field, managed);
 				} break;
 				case Variant::POOL_COLOR_ARRAY: {
@@ -389,11 +433,13 @@ String GDMonoField::get_string_value(MonoObject *p_object) {
 bool GDMonoField::has_attribute(GDMonoClass *p_attr_class) {
 	ERR_FAIL_NULL_V(p_attr_class, false);
 
-	if (!attrs_fetched)
+	if (!attrs_fetched) {
 		fetch_attributes();
+	}
 
-	if (!attributes)
+	if (!attributes) {
 		return false;
+	}
 
 	return mono_custom_attrs_has_attr(attributes, p_attr_class->get_mono_ptr());
 }
@@ -401,11 +447,13 @@ bool GDMonoField::has_attribute(GDMonoClass *p_attr_class) {
 MonoObject *GDMonoField::get_attribute(GDMonoClass *p_attr_class) {
 	ERR_FAIL_NULL_V(p_attr_class, NULL);
 
-	if (!attrs_fetched)
+	if (!attrs_fetched) {
 		fetch_attributes();
+	}
 
-	if (!attributes)
+	if (!attributes) {
 		return NULL;
+	}
 
 	return mono_custom_attrs_get_attr(attributes, p_attr_class->get_mono_ptr());
 }
