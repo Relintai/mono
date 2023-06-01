@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef NODEPATH_GLUE_H
-#define NODEPATH_GLUE_H
+#ifndef STRING_NAME_GLUE_H
+#define STRING_NAME_GLUE_H
 
 #ifdef MONO_GLUE_ENABLED
 
