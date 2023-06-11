@@ -22,9 +22,9 @@ namespace Godot
         /// Thrown when the given the loaded resource can't be casted to the given type <typeparamref name="T"/>.
         /// </exception>
         /// <typeparam name="T">The type to cast to. Should be a descendant of <see cref="Resource"/>.</typeparam>
-        public static T Load<T>(string path, string typeHint = null, bool noCache = false) where T : class
+        public static T Load<T>(string path, string typeHint = null) where T : class
         {
-            return (T)(object)Load(path, typeHint, noCache);
+            return (T)(object)Load(path, typeHint);
         }
     }
 }
