@@ -32,20 +32,20 @@
 
 #include <mono/metadata/threads.h>
 
+#include "core/config/project_settings.h"
 #include "core/io/json.h"
 #include "core/os/file_access.h"
 #include "core/os/os.h"
 #include "core/os/thread.h"
-#include "core/config/project_settings.h"
 
 #ifdef TOOLS_ENABLED
 #include "core/os/keyboard.h"
 #include "editor/bindings_generator.h"
 #include "editor/csharp_project.h"
+#include "editor/editor_inspector.h"
 #include "editor/editor_node.h"
 #include "editor/editor_settings.h"
 #include "editor/node_dock.h"
-#include "editor/editor_inspector.h"
 #endif
 
 #ifdef DEBUG_METHODS_ENABLED
@@ -1057,8 +1057,20 @@ void CSharpLanguage::reload_assemblies(bool p_soft_reload) {
 
 			// Call OnAfterDeserialization
 			CSharpInstance *csi = CAST_CSHARP_INSTANCE(obj->get_script_instance());
-			if (csi && csi->script->script_class->implements_interface(CACHED_CLASS(ISerializationListener)))
-				obj->get_script_instance()->call_multilevel(string_names.on_after_deserialize);
+
+			if (csi) {
+				if (!csi->script.is_valid()) {
+					continue;
+				}
+
+				if (!csi->script->script_class) {
+					continue;
+				}
+
+				if (csi->script->script_class->implements_interface(CACHED_CLASS(ISerializationListener))) {
+					obj->get_script_instance()->call_multilevel(string_names.on_after_deserialize);
+				}
+			}
 		}
 
 		script->pending_reload_instances.clear();
@@ -2827,7 +2839,7 @@ Ref<CSharpScript> CSharpScript::create_for_managed_type(GDMonoClass *p_class, GD
 	CRASH_COND(p_class == NULL);
 
 	// TODO OPTIMIZE: Cache the 'CSharpScript' associated with this 'p_class' instead of allocating a new one every time
-	Ref<CSharpScript> script = memnew(CSharpScript);
+	Ref<CSharpScript> script = Ref<CSharpScript>(memnew(CSharpScript));
 
 	initialize_for_managed_type(script, p_class, p_native);
 
