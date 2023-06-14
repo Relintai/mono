@@ -143,6 +143,8 @@ Variant mono_object_to_variant(MonoObject *p_obj);
 Variant mono_object_to_variant(MonoObject *p_obj, const ManagedType &p_type);
 Variant mono_object_to_variant_no_err(MonoObject *p_obj, const ManagedType &p_type);
 
+Variant string_name_ptr_to_variant(StringName *p_obj);
+
 /// Tries to convert the MonoObject* to Variant and then convert the Variant to String.
 /// If the MonoObject* cannot be converted to Variant, then 'ToString()' is called instead.
 String mono_object_to_variant_string(MonoObject *p_obj, MonoException **r_exc);
@@ -467,8 +469,7 @@ struct M_Projection {
 		return Projection(M_Vector4::convert_to(p_from.matrix[0]),
 				M_Vector4::convert_to(p_from.matrix[1]),
 				M_Vector4::convert_to(p_from.matrix[2]),
-				M_Vector4::convert_to(p_from.matrix[3])
-		);
+				M_Vector4::convert_to(p_from.matrix[3]));
 	}
 
 	static _FORCE_INLINE_ M_Projection convert_from(const Projection &p_from) {

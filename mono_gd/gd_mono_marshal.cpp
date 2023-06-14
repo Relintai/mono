@@ -1372,6 +1372,14 @@ Variant mono_object_to_variant_no_err(MonoObject *p_obj, const ManagedType &p_ty
 	return mono_object_to_variant_impl(p_obj, p_type, /* fail_with_err: */ false);
 }
 
+Variant string_name_ptr_to_variant(StringName *p_obj) {
+	if (!p_obj) {
+		return Variant();
+	}
+
+	return Variant(*p_obj);
+}
+
 String mono_object_to_variant_string(MonoObject *p_obj, MonoException **r_exc) {
 	if (p_obj == nullptr) {
 		return String("null");

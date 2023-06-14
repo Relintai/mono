@@ -93,6 +93,8 @@
 #define C_METHOD_MANAGED_FROM_VARIANT C_NS_MONOMARSHAL "::variant_to_mono_object"
 #define C_METHOD_MONOSTR_TO_GODOT C_NS_MONOMARSHAL "::mono_string_to_godot"
 #define C_METHOD_MONOSTR_FROM_GODOT C_NS_MONOMARSHAL "::mono_string_from_godot"
+#define C_METHOD_STRING_NAME_PTR_TO_VARIANT C_NS_MONOMARSHAL "::string_name_ptr_to_variant"
+//#define C_METHOD_STRING_NAME_PTR_FROM_VARIANT C_NS_MONOMARSHAL "::variant_to_string_name_ptr"
 #define C_METHOD_MONOARRAY_TO(m_type) C_NS_MONOMARSHAL "::mono_array_to_" #m_type
 #define C_METHOD_MONOARRAY_FROM(m_type) C_NS_MONOMARSHAL "::" #m_type "_to_mono_array"
 
@@ -3133,6 +3135,7 @@ void BindingsGenerator::_populate_builtin_type_interfaces() {
 	itype.name = "StringName";
 	itype.cname = itype.name;
 	itype.proxy_name = "StringName";
+	itype.c_in = "\t%0 %1_in = " C_METHOD_STRING_NAME_PTR_TO_VARIANT "(%1);\n";
 	itype.c_out = "\treturn memnew(StringName(%1));\n";
 	itype.c_type = itype.name;
 	itype.c_type_in = itype.c_type + "*";
