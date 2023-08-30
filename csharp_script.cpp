@@ -3401,7 +3401,7 @@ void CSharpScript::get_members(RBSet<StringName> *p_members) {
 
 /*************** RESOURCE ***************/
 
-RES ResourceFormatLoaderCSharpScript::load(const String &p_path, const String &p_original_path, Error *r_error) {
+RES ResourceFormatLoaderCSharpScript::load(const String &p_path, const String &p_original_path, Error *r_error, bool p_no_subresource_cache) {
 	if (r_error)
 		*r_error = ERR_FILE_CANT_OPEN;
 
