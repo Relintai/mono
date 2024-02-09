@@ -83,10 +83,12 @@ String cwd() {
 #ifdef WINDOWS_ENABLED
 	const DWORD expected_size = ::GetCurrentDirectoryW(0, NULL);
 
-	String buffer;
-	buffer.resize((int)expected_size);
-	if (::GetCurrentDirectoryW(expected_size, buffer.ptrw()) == 0)
+	Char16String cbuffer;
+	cbuffer.resize((int)expected_size);
+	if (::GetCurrentDirectoryW(expected_size, (LPWSTR)cbuffer.ptrw()) == 0)
 		return ".";
+
+	String buffer = String::utf16(cbuffer.get_data());
 
 	return buffer.simplify_path();
 #else
@@ -113,7 +115,7 @@ String abspath(const String &p_path) {
 String realpath(const String &p_path) {
 #ifdef WINDOWS_ENABLED
 	// Open file without read/write access
-	HANDLE hFile = ::CreateFileW(p_path.c_str(), 0,
+	HANDLE hFile = ::CreateFileW((LPCWSTR)p_path.utf16().get_data(), 0,
 			FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
 			NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
@@ -127,9 +129,11 @@ String realpath(const String &p_path) {
 		return p_path;
 	}
 
-	String buffer;
-	buffer.resize((int)expected_size);
-	::GetFinalPathNameByHandleW(hFile, buffer.ptrw(), expected_size, FILE_NAME_NORMALIZED);
+	Char16String cbuffer;
+	cbuffer.resize((int)expected_size);
+	::GetFinalPathNameByHandleW(hFile, (LPWSTR)cbuffer.ptrw(), expected_size, FILE_NAME_NORMALIZED);
+
+	String buffer = String::utf16(cbuffer.get_data());
 
 	::CloseHandle(hFile);
 	return buffer.simplify_path();
