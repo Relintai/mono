@@ -33,7 +33,7 @@
 #include "core/config/project_settings.h"
 #include "editor/editor_file_system.h"
 #include "editor/editor_settings.h"
-#include "scene/gui/control.h"
+#include "scene/main/control.h"
 #include "scene/main/node.h"
 
 namespace gdmono {

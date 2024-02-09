@@ -46,6 +46,7 @@
 #include "editor/editor_node.h"
 #include "editor/editor_settings.h"
 #include "editor/node_dock.h"
+#include "editor/editor_file_system.h"
 #endif
 
 #ifdef DEBUG_METHODS_ENABLED
